@@ -12,25 +12,29 @@
 \newcommand{\code}[1]{\texttt{#1}}
 \newcommand{\file}[1]{\texttt{\bfseries#1}}
 \newcommand{\option}[1]{\texttt{\itshape#1}}
+\newcommand{\note}[1]{\textcolor{red}{#1}}
 
 %----------------------------------------------------------------------------------------
 
-%\section{Welcome and Thank You}
-The main focus of this thesis is indoor localization of mobile devices.
+The main focus of this thesis is indoor localization of mobile devices especially smartphones.
 
 With today's ubiquity of mobile computing, it has become evermore important for these devices to be aware of their location. Location awareness is fundamental for many possible applications such as pedestrian navigation and location based marketing in large building complexes (e.g. universities, airports, hospitals) or audio-guides for museums.
 
 In contrast to outdoor localization, where we have GPS and other established solutions, indoor localization still remains challenging. Some of the reasons for this include the inability of the GPS signal to penetrate into the building and the effects of non-line-of-sight and multipath propagation on radio waves deteriorating the signal to be less accurate for localization\cite{JoseMaster,multipathEffects}. In addition to these challenges indoor location based applications usually require higher accuracy than those outdoors; An error of four meters is acceptable for street navigation but not for a museum guide.
 
-This has been an active research field in the last few years with many different systems and techniques proposed; Although they have yet to see large scale adoption. 
+This has been an active research field in the last few years with many different techniques proposed \cite{surveyIndoorTechniques,surveyWirelessPersonal}. One common approach is to base the localization on WiFi radio signals. WiFi infrastructure is already present in almost every building and can easily be upgraded with standardized off the shelf hardware. These radio-based techniques are usually classified into range-based and range-free methods\cite{FineGrainedIndoorTracking}.
 
-There are numerous possible applications for
-With today's ubiquity of mobile computing, it has become evermore important for these devices to be aware of their location. location aware systems have b many systems and services ether benefit or rely on knowing the location of their device. awareness.
-There are numerous useful and beneficial possible applications for Indoor localisation and tracking of mobile devices  
-In contrast to outdoor localization, where multiple established solutions exist, th
-Indoor localization of smartphones and other mobile computing devices
-Today there is a increasing demand for location 
-With the growing ubiquity of mobile computing devices  smartphones accurate location of these and other mobile devices has become evermore important.  location Welcome to this \LaTeX{} Thesis Template, a beautiful and easy to use template for writing a thesis using the \LaTeX{} typesetting system.
+Fingerprinting is a common range-free method, where known radio parameters are mapped to a location. Later this map is used to determine the devices location based on the current radio parameters. Fingerprinting can achieve good accuracy but creating the map is very labor intensive\cite{FineGrainedIndoorTracking}.
+
+Range-based methods use the radio parameters to try to approximate the distance between the mobile device (Mobile Node) and the signal emitters (Anchor Nodes). This process is called ranging. Trilateration is then performed on these distances to determine the position of the MN. The ranging process is prone to errors caused by multipath propagation.\cite{FineGrainedIndoorTracking}.
+
+Previous research at the CDS group used the smartphones received signal strength indicator in a range-based approach, using a regression model for ranging and least squares optimization for solving the trilateration problem \note{Citation needed}.In this work I investigate if this approach can be improved by adding a room recognition layer to it. I use the room recognition to assign weights to the ranges based on the devices current room and so improve the trilateration with weighted least squares. For the room recognition I employ a fingerprinting map built from the RSSI and the magnetic field readings of the smartphones internal magnetometer.\\
+
+My main contributions are summarized as follows:
+\begin{itemize}
+\item 
+\end{itemize}
+
 
 %----------------------------------------------------------------------------------------
 
