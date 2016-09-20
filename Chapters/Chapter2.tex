@@ -4,32 +4,88 @@
 
 \label{Chapter2} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
+The goal of this chapter is to provide the reader with the knowledge required to understand the rest of this work. As such I will not only talk about the theory behind the fingerprinting, ranging and triangulation methods but also describe the important characteristics of the observation parameters \red{and the smartphone(Android API)}. Where \red{helpful} I will also mention some of the related work or additional reading.
+
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
-\section{Theoretical Background}
+\section{Observation parameters}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam ultricies lacinia euismod. Nam tempus risus in dolor rhoncus in interdum enim tincidunt. Donec vel nunc neque. In condimentum ullamcorper quam non consequat. Fusce sagittis tempor feugiat. Fusce magna erat, molestie eu convallis ut, tempus sed arcu. Quisque molestie, ante a tincidunt ullamcorper, sapien enim dignissim lacus, in semper nibh erat lobortis purus. Integer dapibus ligula ac risus convallis pellentesque.
-
+The observation parameters provide the information the rest of the approach is based on. Some of the important aspects to consider when choosing them are:
+\begin{itemize}
+\item They need to be available in an indoor environment.
+\item They need to be detectable by the mobile device.
+\item They need to contain some information suitable for localization.
+\end{itemize}
+Following the parameters are analyzed using these criteria.
+\\\note{Rewrite this section/is is even necessary}
 %-----------------------------------
 %	SUBSECTION 1
 %-----------------------------------
-\subsection{Received signal strength indication}
+\subsection{RSSI and signal propagation}
 
-Nunc posuere quam at lectus tristique eu ultrices augue venenatis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aliquam erat volutpat. Vivamus sodales tortor eget quam adipiscing in vulputate ante ullamcorper. Sed eros ante, lacinia et sollicitudin et, aliquam sit amet augue. In hac habitasse platea dictumst.
+The received signal strength indicator describes the total signal power received in milliwatts with the value expressed on a logarithmic scale (dBm)\cite[p.~160]{sauter2010gsm}. \red{In the case of Wi-Fi a value of -30 would mean a very strong signal while one of -90 would be so low as to be unusable (drowning in noise).}  In an open space without any obstacles the RSSI mainly depends on the propagation distance, but indoors several other factors become important. These are non line of sight (NLOS) and multipath propagation.
+
+NLOS occurs when the signals path is obstructed by physical objects. The signal has to pass through these objects and therefore the RSSI is lower compared to LOS, where there are no obstacles\cite{JoseMaster}.
+
+Multypath propagation is caused when the signal is reflected from physical objects and arrives at the receiver multiple times with different signal strength. This causes inaccuracy and fluctuations in the measured RSSI as all these signals are blended together\cite{multipathEffects}.
+
+Both of these affects are very common in indoor environments, caused by the walls, people, furniture and other building materials. Furthermore the RSSI values are discrete and not fine grained what causes additional inaccuracy. This makes localization based on RSSI challenging and limits its accuracy.
+
+There are other ways to assess the signal strength, such as channel state information, which is more fine grained and can mitigate multipath effects, but they are not available on most mobile devices\cite{JoseMaster,FineGrainedIndoorTracking}.
 
 %-----------------------------------
 %	SUBSECTION 2
 %-----------------------------------
 
-\subsection{Support vector machine}
-Morbi rutrum odio eget arcu adipiscing sodales. Aenean et purus a est pulvinar pellentesque. Cras in elit neque, quis varius elit. Phasellus fringilla, nibh eu tempus venenatis, dolor elit posuere quam, quis adipiscing urna leo nec orci. Sed nec nulla auctor odio aliquet consequat. Ut nec nulla in ante ullamcorper aliquam at sed dolor. Phasellus fermentum magna in augue gravida cursus. Cras sed pretium lorem. Pellentesque eget ornare odio. Proin accumsan, massa viverra cursus pharetra, ipsum nisi lobortis velit, a malesuada dolor lorem eu neque.
+\subsection{Magnetic field in indoor environments}
+
+Earths natural magnetic field has already been used for localization, mainly as a compass to determine the devices heading in PDR systems. However, the presence of magnetic field anomalies make accurate heading determination difficult for indoor applications. The anomalies are caused by the ferrous structures in the building materials, electrical devices, cables and tubes. Previous research suggests that these anomalies can be used in a fingerprinting approach to determine a devices location\cite{haverinen2009global,angermann2012CharacterizationMagnetic,Li2012feasableMagnetic}. They show that the magnetic field anomalies have sufficient local variability, are mostly stable over time and therefore applicable for use in localization.
+
+In my case the magnetic field data is provided by the smartphones magnetometer sensor. It measures the magnetic field strength in microtesla along the devices three axis.\\
+\note{Should I go more in depth here?}
+
+\subsection{Smartphone hardware and \code{AndroidAPI}}
+
+Smartphones are probably the most common mobile computing devices and they are usually equipped with many sensors; gyroscope, magnetometer, accelerometer, etc. This makes them a good target for indoor localization.But there are also some limitations when working with smartphones, especially concerning Wi-Fi.
+
+In the case of Android, access to the devices Wi-Fi capability is limited by the \code{AndroidAPI}. \red{For} signal stength the RSSI is the only value provided, CSI is not supported. Also there is no way to only scan a single channel. A Wi-Fi scan has to be initiated through the \code{AndroidAPI} and it only supports full scans\cite{brouwers2014incremental}. Full scans take longer and so lower the sampling rate.
+
+\red{Furthermore, because of the many different Wi-Fi modules and hardware configurations, the RSSI values measured by different Smartphones is not the same. This means that for every Smartphone type a new data set needs to be gathered.}
+
+\note{Is this understandable?}
+
+\red{Computing power can also be a limiting factor on older devices or when using more demanding algorithms like k-NN.}
+
+\note{rework this section}
+
 
 %----------------------------------------------------------------------------------------
 %	SECTION 2
 %----------------------------------------------------------------------------------------
 
-\section{Related Work}
+\section{Fingerprinting}
 
-Sed ullamcorper quam eu nisl interdum at interdum enim egestas. Aliquam placerat justo sed lectus lobortis ut porta nisl porttitor. Vestibulum mi dolor, lacinia molestie gravida at, tempus vitae ligula. Donec eget quam sapien, in viverra eros. Donec pellentesque justo a massa fringilla non vestibulum metus vestibulum. Vestibulum in orci quis felis tempor lacinia. Vivamus ornare ultrices facilisis. Ut hendrerit volutpat vulputate. Morbi condimentum venenatis augue, id porta ipsum vulputate in. Curabitur luctus tempus justo. Vestibulum risus lectus, adipiscing nec condimentum quis, condimentum nec nisl. Aliquam dictum sagittis velit sed iaculis. Morbi tristique augue sit amet nulla pulvinar id facilisis ligula mollis. Nam elit libero, tincidunt ut aliquam at, molestie in quam. Aenean rhoncus vehicula hendrerit.
+Fingerprinting is a common method for localization based on RSSI\cite{chapre2013RSSI}. It consists of two main phases.
+
+In the offline/training phase a map of reference points (RP) is created by collecting RSSI values for each AN from known locations.
+Then in the online phase RSSI values are collected from an unknown location, called the test point (TP). The location of the TP is determined based on the RP-map using machine learning algorithms like  a k-nearest neighbor regression\cite{JoseMaster}.
+
+The accuracy of this method mainly depends on the density of the RP-map. The higher the density of RPs the better the accuracy. Generally achieving a satisfying level of accuracy, requires a lot of RPs. This is why this method is so labor intensive.
+
+Other factors are the number of attributes in each RP and the variability of the observation parameters.
+
+More attributes per RP, an attribute being a data value like a RSSI or a magnetic field measurement, gives the algorithm more information to work with and so increased the accuracy\cite{Li2012feasableMagnetic}. This effect is subject to diminishing returns\cite{brouwers2014incremental}.
+\red{For the same reason a high variability in the observation parameters depending on location is also beneficial.}
+
+\note{"For the same reason" is this understandable}
+\subsection{Support Vector Machine}
+
+introduction machinelearning terms
+svm trained wit data ->then categorize new data.
+draws hypeeplane to separate date
+new data is categorized based on which side of hyperplane it is.
+
+
+

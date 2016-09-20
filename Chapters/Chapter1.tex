@@ -12,7 +12,6 @@
 \newcommand{\code}[1]{\texttt{#1}}
 \newcommand{\file}[1]{\texttt{\bfseries#1}}
 \newcommand{\option}[1]{\texttt{\itshape#1}}
-\newcommand{\note}[1]{\textcolor{red}{#1}}
 
 %----------------------------------------------------------------------------------------
 
@@ -22,32 +21,26 @@ With today's ubiquity of mobile computing, it has become evermore important for 
 
 In contrast to outdoor localization, where we have GPS and other established solutions, indoor localization still remains challenging. Some of the reasons for this include the inability of the GPS signal to penetrate into the building and the effects of non-line-of-sight and multipath propagation on radio waves deteriorating the signal to be less accurate for localization\cite{JoseMaster,multipathEffects}. In addition to these challenges indoor location based applications usually require higher accuracy than those outdoors; An error of four meters is acceptable for street navigation but not for a museum guide.
 
+\section{Motivation}
+
 This has been an active research field in the last few years with many different techniques proposed \cite{surveyIndoorTechniques,surveyWirelessPersonal}. One common approach is to base the localization on WiFi radio signals. WiFi infrastructure is already present in almost every building and can easily be upgraded with standardized off the shelf hardware. These radio-based techniques are usually classified into range-based and range-free methods\cite{FineGrainedIndoorTracking}.
 
 Fingerprinting is a common range-free method, where known radio parameters are mapped to a location. Later this map is used to determine the devices location based on the current radio parameters. Fingerprinting can achieve good accuracy but creating the map is very labor intensive\cite{FineGrainedIndoorTracking}.
 
 Range-based methods use the radio parameters to try to approximate the distance between the mobile device (Mobile Node) and the signal emitters (Anchor Nodes). This process is called ranging. Trilateration is then performed on these distances to determine the position of the MN. The ranging process is prone to errors caused by multipath propagation.\cite{FineGrainedIndoorTracking}.
 
+%----------------------------------------------------------------------------------------
+\section{Overview and Contributions}
+
 Previous research at the CDS group used the smartphones received signal strength indicator in a range-based approach, using a regression model for ranging and least squares optimization for solving the trilateration problem \note{Citation needed}.In this work I investigate if this approach can be improved by adding a room recognition layer to it. I use the room recognition to assign weights to the ranges based on the devices current room and so improve the trilateration with weighted least squares. For the room recognition I employ a fingerprinting map built from the RSSI and the magnetic field readings of the smartphones internal magnetometer.\\
 
-My main contributions are summarized as follows:
+My main findings are summarized as follows:
 \begin{itemize}
-\item 
+\item The proposed room recognition method is feasible, has sufficiently high accuracy and the map is not very labor intensive to create \note{Formulation}.
+\item The inclusion of magnetic field data significantly improves the accuracy of the room recognition.
+\item Setting weights based on the room recognition increases the trilaterations accuracy, although not very significantly.
 \end{itemize}
-
-
-%----------------------------------------------------------------------------------------
-
-\section{Motivation}
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam ultricies lacinia euismod. Nam tempus risus in dolor rhoncus in interdum enim tincidunt. Donec vel nunc neque. In condimentum ullamcorper quam non consequat. Fusce sagittis tempor feugiat. Fusce magna erat, molestie eu convallis ut, tempus sed arcu. Quisque molestie, ante a tincidunt ullamcorper, sapien enim dignissim lacus, in semper nibh erat lobortis purus. Integer dapibus ligula ac risus convallis pellentesque.
-
-\subsection{Overview and Contributions}
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam ultricies lacinia euismod. Nam tempus risus in dolor rhoncus in interdum enim tincidunt. Donec vel nunc neque. In condimentum ullamcorper quam non consequat. Fusce sagittis tempor feugiat. Fusce magna erat, molestie eu convallis ut, tempus sed arcu. Quisque molestie, ante a tincidunt ullamcorper, sapien enim dignissim lacus, in semper nibh erat lobortis purus. Integer dapibus ligula ac risus convallis pellentesque.
-
-%----------------------------------------------------------------------------------------
 
 \section{Structure of this Work}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam ultricies lacinia euismod. Nam tempus risus in dolor rhoncus in interdum enim tincidunt. Donec vel nunc neque. In condimentum ullamcorper quam non consequat. Fusce sagittis tempor feugiat. Fusce magna erat, molestie eu convallis ut, tempus sed arcu. Quisque molestie, ante a tincidunt ullamcorper, sapien enim dignissim lacus, in semper nibh erat lobortis purus. Integer dapibus ligula ac risus convallis pellentesque.
+\noindent In the remainder of this work, \red{related works} and the theoretical background is reviewed in chapter 2. The room recognition approach is introduced and investigated in chapter 3, the weighting methods in chapter 4. In chapter 5 the methods from the previous chapters are then evaluated. Chapter 6 concludes the thesis. \\\note{Rewrite this part}\\\note{rework the section headings and page beak}
