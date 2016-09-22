@@ -81,17 +81,22 @@ More attributes per RP, an attribute being a data value like a RSSI or a magneti
 
 \note{"For the same reason" is this understandable?}
 \subsection{Support Vector Machine}
+A Support Vector Machine (SVM) is a machine learning algorithm. It predicts the labels of new (unknown) samples based on previous (known) examples. \red{The set of labels is finite as it only supports two labels. This is called binary classification.}
 
-Machinelearning problems are classified into supervised and unsupervised based on if the training data is labeld or not. Supervised problems are then split up again based on if the values are descrete or continupus. These are called classificarion and regression.
-The support vector machine is aimed at solving the classification problem. It is first trained with a datasset of known labels, this trained model can then be used to assign labels to new data.
+The known examples are called training data. It consists of instance-label pairs \(\left ( x_{i}, y_{i} \right ), i=1,...,l\) where \(x_{i}\in R^{n}\) and \(y_{i}\in \left \{ -1,1 \right \}\)\note{hoch l?}
+\(x_{i}\) represents the samples's observable features while the label \(y_{i}\) defines in which category it belongs.
 
-In machinelearning \red{we speek} about classification 
+The SVM maps the samples into \(n\)-dimentional space and then tries to fit a \(hyperplane\) through that space separating the two classes so that ideally all samples with \(y_{i}=1\) are on one side of the \(hyperplane\) and \(y_{i}=-1\) on the other. To make the separation as clear as possible the \(margin\) between the \(hyperplane\) and the samples is maximized at the same time. This also counters overfitting. The samples which lie directly on the margins are called the support vectors.
 
+\note{Figure XY: two classes separated by a hyperplane (black) with margins(pointed)}
 
-introduction machinelearning terms
-svm trained wit data ->then categorize new data.
-draws hypeeplane to separate date
-new data is categorized based on which side of hyperplane it is.
+\red{To fit the hyperpalane the SVM solves the following optimization problem:
+\note{Insert formula}
+The parameter c defines how strong it reacts to outliers}
+
+To classify a new unknown sample the SVM determines on which side of the \(hyperplane\) it lies and assigns the according label.
+
+But the training data may not be linearly separable. In this case the so called kernel trick can be used. The kernel is a function \(k\left ( x_{i}, x_{j} \right )=\phi \left ( x_{i} \right )\cdot \phi\left ( x_{j} \right )\) which maps the features \(x_{i}\) to a higher dimetional space. Here the SVM  where it is linerarly 
 
 
 
