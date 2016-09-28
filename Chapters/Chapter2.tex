@@ -85,22 +85,67 @@ More attributes per RP, an attribute being a data value like a RSSI or a magneti
 \subsection{Support Vector Machine}
 A Support Vector Machine (SVM) is a machine learning algorithm. It predicts the labels of new (unknown) samples based on previous (known) examples. \red{The set of labels is finite as it only supports two labels. This is called binary classification.}
 
-The known examples are called training data. It consists of instance-label pairs \(\left ( x_{i}, y_{i} \right ), i=1,...,l\) where \(x_{i}\in R^{n}\) and \(y_{i}\in \left \{ -1,1 \right \}\)\note{hoch l?}
-\(x_{i}\) represents the samples's observable features while the label \(y_{i}\) defines in which category it belongs.
+The known examples are called training data. It consists of instance-label pairs \(\left ( x_{i}, y_{i} \right ), i=1,...,l\) where \(x_{i}\in R^{n}\) and \(y_{i}\in \left \{ -1,1 \right \}\). \(x_{i}\) represents the samples's observable features while the label \(y_{i}\) defines in which category it belongs.
 
 The SVM maps the samples into \(n\)-dimentional space and then tries to fit a hyperplane through that space separating the two classes so that ideally all samples with \(y_{i}=1\) are on one side of the hyperplane and \(y_{i}=-1\) on the other. To make the separation as clear as possible the margin between the hyperplane and the samples is maximized at the same time. The samples which lie directly on the margins are called the support vectors.
 
-To classify a new unknown sample the SVM determines on which side of the \(hyperplane\) it lies and assigns the according label.
+To classify a new unknown sample the SVM determines on which side of the hyperplane it lies and assigns the according label.
 
 \note{Figure XY: two classes separated by a hyperplane (black) with margins(pointed)}
 
 \red{To fit the hyperpalane the SVM solves the following optimization problem\cite{chang2011libsvm}:
 \note{Insert formula}}
 
-There may be outlines in the data, so a \(hyperplane\) that separates all samples correctly may not be the best classifier. To account for this, a cost is paid if a sample violates the error term \(y_{i}\left ( w^{T}\phi \left ( x_{i} \right )+b \right )\geq 1\), increasing the objective function by \(C \xi_{i}\). For large values of C the optimization will chose a \(hyperplane\) with a smaller margin, if it classifies all the samples correctly. Conversely, a small value of C will cause the optimizer to look for a larger-margin separating \(hyperplane\), even if that \(hyperplane\) misclassifies more samples\cite{crossValidatedSVMC}.
+There may be outlines in the data, so a hyperplane that separates all samples correctly may not be the best classifier. To account for this, a cost is paid if a sample violates the error term \(y_{i}\left ( w^{T}\phi \left ( x_{i} \right )+b \right )\geq 1\), increasing the objective function by \(C \xi_{i}\). For large values of C the optimization will chose a hyperplane with a smaller margin, if it classifies more samples correctly. Conversely, a small value of C will cause the optimizer to look for a larger-margin separating hyperplane, even if that hyperplane misclassifies more samples\cite{crossValidatedSVMC}.
 
-But the training data may not be linearly separable. In this case the so called kernel trick can be used. The kernel is a function \(k\left ( x_{i}, x_{j} \right )=\phi \left ( x_{i} \right )\cdot \phi\left ( x_{j} \right )\) which maps the features \(x_{i}\) to a higher dimensional space where \red{they} can be separated by a \(hyperplane\). This results in a non linear separation in the original feature space\cite{ErikKimKernelTrick}.
+But the training data may not be linearly separable. In this case the so called kernel trick can be used. The kernel is a function \(k\left ( x_{i}, x_{j} \right )=\phi \left ( x_{i} \right )\cdot \phi\left ( x_{j} \right )\) which maps the features \(x_{i}\) to a higher dimensional space where they can be separated by a hyperplane. This results in a non linear separation in the original feature space\cite{ErikKimKernelTrick}.
 
-To classify more than two classes 
+To perform multy-class classification the "one-against-one" approach can be used. For \(k\) classes \(k\left ( k-1 \right )/2\) classifiers are trained. Each binary classifier is then considered to vote for a class. The sample is then placed in the class with the most votes\cite{chang2011libsvm}.
 
 
+\section{Ranging}
+
+The ranging process estimates the distance between the ANs and the MN based on the radio parameters, in this case RSSI. This is done with non-linear regression (NLR) and the following path loss model proposed by \cite{li2015passiveWIFIsource}:
+\begin{equation}
+d_{i}=\alpha_{i}e^{\beta_{i}RSSI_{i}}
+\label{eqn:non-linear path loss model}
+\end{equation}
+It describes the loss of signal strength over the propagation distance. \(d_{i}\) is the estimated distance from the MN to the \(i\)-th AN, \(RSSI_{i}\) is the \(i\)-th AN's signal strength as measured by the MN and \(\alpha_{i}, \beta_{i}\) are environment variables specific to each AN.
+
+The model needs to be trained for each AN individually by determining the values for \(\alpha_{i}\) and \(\beta_{i}\). This is done by fitting the function to a small set of training samples \red{gathered from the building}. This can be done using any number of least squares optimization methods.
+
+\section{Trilateration}
+
+Trilateration is the process of determining a absolute or relative location based on the distance to known locations. In contrast to triangulation it relies on distances instead of angles.
+
+In the context of localization the goal is to determine the NM's location \(\left ( x,y \right )\) based on the the locations of the ANs \(\left ( \tilde{x_{i}},\tilde{y_{i}} \right )\) and the distance estimations \(d_{i}\) obtained from the path loss model.
+
+The actual distance \(D_{i}\) from the MN to the \(i\)-th AN can be expressed as follows:
+\begin{equation}
+D_{i} = \sqrt{\left ( \tilde{x_{i}}-x \right )^{2}+\left ( \tilde{y_{i}}-y \right )^{2}}
+\label{eqn: distance MN to AN_{i}}
+\end{equation}
+Under the assumption that \(d_{i}=D_{i}\)  this leads to the following equation system:
+\begin{equation}
+\begin{pmatrix}
+d_{1}\\ 
+d_{2}\\
+\vdots\\
+d_{n}
+\end{pmatrix}
+=
+\begin{pmatrix}
+\sqrt{\left ( \tilde{x_{1}}-x \right )^{2}+\left ( \tilde{y_{1}}-y \right )^{2}}\\
+\sqrt{\left ( \tilde{x_{2}}-x \right )^{2}+\left ( \tilde{y_{2}}-y \right )^{2}} \\
+\vdots\\
+\sqrt{\left ( \tilde{x_{n}}-x \right )^{2}+\left ( \tilde{y_{n}}-y \right )^{2}}
+\end{pmatrix}
+\label{eqn: trilateration problem as equation system}
+\end{equation}
+
+But \(d_{i}\) is only an estimation so there is no \red{exact} solution of the above system. The best solution is the one that minimizes the sum of the squared error \(d_{i} - D_{i}\). So to determine the MN's location the following problem has to be solved:
+\begin{equation}
+argmin_{x,y}\sum_{i=1}^{n}w_{i}\left ( d_{i} - \sqrt{\left ( \tilde{x_{i}}-x \right )^{2}+\left ( \tilde{y_{i}}-y \right )^{2}} \right )^{2}
+\label{eqn: trilateration as optimization problem}
+\end{equation}
+This can be done using a optimization algorithm like "Levenberg–Marquardt" or "Gauss-Newton".
