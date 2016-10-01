@@ -1,0 +1,15 @@
+\chapter{Proposed Improvements} % Main chapter title
+
+\label{Chapter3} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
+
+In this chapter i will briefly explain the existing approach and then talk about the proposed improvements.
+
+\section{The basic approach}
+
+This approach was used for previous work in the CDS group\note{Citation Needed}. I will only shortly summarize the approach. For details I recommend reading the related paper.
+
+As already mentioned in the introduction it is a range-based approach. So in a first training step a small number of training samples \((RSSI_{i}, x,y)\) are gathered.\red{In the case of [above citation] 20 points were used for a XXXqm 8 room testbed}. These samples are then used to train the regression models from section 2.3 \note{reference}. \red{During operation} these are then used to determine the distance to the ANs based on the RSSI at the mobile node. Using the trilateration method from section 2.4 \note{reference}. The trilateration is ether performed as OLS without any weights or using simple weights based on the distance to the ANs.
+
+\section{Proposed Improvements}
+\subsection{Room Recognition}
+\subsection{Questions and Challenges}

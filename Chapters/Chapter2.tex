@@ -81,7 +81,6 @@ More attributes per RP, an attribute being a data value like a RSSI or a magneti
 
 \note{"For the same reason" is this understandable?}
 
-
 \subsection{Support Vector Machine}
 A Support Vector Machine (SVM) is a machine learning algorithm. It predicts the labels of new (unknown) samples based on previous (known) examples. \red{The set of labels is finite as it only supports two labels. This is called binary classification.}
 
@@ -91,12 +90,28 @@ The SVM maps the samples into \(n\)-dimentional space and then tries to fit a hy
 
 To classify a new unknown sample the SVM determines on which side of the hyperplane it lies and assigns the according label.
 
-\note{Figure XY: two classes separated by a hyperplane (black) with margins(pointed)}
-
-\red{To fit the hyperpalane the SVM solves the following optimization problem\cite{chang2011libsvm}:
-\note{Insert formula}}
+\red{To fit the hyperpalane the SVM solves the following optimization} problem\cite{chang2011libsvm}:
+\begin{equation}
+\begin{split}
+\min_{\omega , b ,\xi}\;\; & \frac{1}{2}\omega^{T}\omega +C\sum_{i=1}^{l}\xi_{i}\\
+\textup{subject to}\;\; & y_{i}\left ( \omega^{T}\phi \left ( x_{i} \right )+b \right )\geq 1-\xi_{i},\\
+& \xi_{i}\geq 0,i=1,...,l
+\end{split}
+\end{equation}
 
 There may be outlines in the data, so a hyperplane that separates all samples correctly may not be the best classifier. To account for this, a cost is paid if a sample violates the error term \(y_{i}\left ( w^{T}\phi \left ( x_{i} \right )+b \right )\geq 1\), increasing the objective function by \(C \xi_{i}\). For large values of C the optimization will chose a hyperplane with a smaller margin, if it classifies more samples correctly. Conversely, a small value of C will cause the optimizer to look for a larger-margin separating hyperplane, even if that hyperplane misclassifies more samples\cite{crossValidatedSVMC}.
+
+\begin{figure}[htp]
+
+\centering
+\includegraphics[width=.3\textwidth]{Figures/svm_1.png}\hfill
+\includegraphics[width=.3\textwidth]{Figures/svm_2.png}\hfill
+\includegraphics[width=.3\textwidth]{Figures/svm_3.png}
+
+\caption[SVM kernel trick]{(Left) A dataset in, not linearly separable. (Middle)The same dataset transformed with decision boundary (Right) The nonlinear decision boundary}
+\label{fig:SVM}
+
+\end{figure}
 
 But the training data may not be linearly separable. In this case the so called kernel trick can be used. The kernel is a function \(k\left ( x_{i}, x_{j} \right )=\phi \left ( x_{i} \right )\cdot \phi\left ( x_{j} \right )\) which maps the features \(x_{i}\) to a higher dimensional space where they can be separated by a hyperplane. This results in a non linear separation in the original feature space\cite{ErikKimKernelTrick}.
 
@@ -149,3 +164,5 @@ argmin_{x,y}\sum_{i=1}^{n}w_{i}\left ( d_{i} - \sqrt{\left ( \tilde{x_{i}}-x \ri
 \label{eqn: trilateration as optimization problem}
 \end{equation}
 This can be done using a optimization algorithm like "Levenberg–Marquardt" or "Gauss-Newton".
+
+\red{The variance on the errors is not constant; Some distance estimation are more accurate than others. This can be taken into account with the set of weights \(w_{i}\) by applying a high weight to the more accurate estimations and a small weight to the inaccurate ones. This can improve the localization, but it is difficult determine the accuracy of the estimations.}
