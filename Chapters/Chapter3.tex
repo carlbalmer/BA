@@ -1,15 +1,82 @@
-\chapter{Proposed Improvements} % Main chapter title
+\chapter{The localization approach} % Main chapter title
 
 \label{Chapter3} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
-In this chapter i will briefly explain the existing approach and then talk about the proposed improvements.
+In this chapter I will briefly explain the existing localization approach and then go into detail about my proposed improvements.
 
-\section{The basic approach}
+\section{The existing approach}
 
-This approach was used for previous work in the CDS group\note{Citation Needed}. I will only shortly summarize the approach. For details I recommend reading the related paper.
+The following diagram shows the exiting approach that was used for previous work in the CDS group \cite{josePaper}:
 
-As already mentioned in the introduction it is a range-based approach. So in a first training step a small number of training samples \((RSSI_{i}, x,y)\) are gathered.\red{In the case of [above citation] 20 points were used for a XXXqm 8 room testbed}. These samples are then used to train the regression models from section 2.3 \note{reference}. \red{During operation} these are then used to determine the distance to the ANs based on the RSSI at the mobile node. Using the trilateration method from section 2.4 \note{reference}. The trilateration is ether performed as OLS without any weights or using simple weights based on the distance to the ANs.
+\note{insert diagramm}
+
+It is a range-based approach and consists of two main phases. In the first phase, the training phase, a small number of training samples are gathered from the building. These samples are value-label pairs with the value being the \(RSSIs\) received from the different ANs and the label the \(x,y\) coordinates of the current location in the building. The samples are gathered with a smartphone. \red{In the case of \cite{josePaper} 20 points were used for a floor with approximate 250m\textsuperscript{2} and eight rooms}. The training samples are then used to train the ranging models explained in chapter \ref{Ranging}.
+
+\red{During localization, the second phase,} RSSI readings are provided by the smartphone (MN). These are subsequently converted into distance estimations \(d_i\)  using the ranging models. Trilateration is then applied to determine the smartphones location. The trilateration is ether performed as OLS without any weights or with weights inversely proportional to the estimated distances.
 
 \section{Proposed Improvements}
+
+There is room for improvement in the way that the existing approach determines the trilateration weights. These weights are used to correct for the error introduced by the ranging. So to determine the weights \red{we} need to know the ranging error. The existing approach makes the simple assumption, that the ranging error increases with distance to the AN. \red{This means the error of \(d_i\) is } Supposed that the error is mainly affected by obstructions to the signal (walls, wires etc.). That would mean, that inside one room (where there are no obstructions to the signal) the error should be approximately the same. So if we knew the roon the device is currently in it would be possible to aproxymate the error and determine the weights.
+
+The trilateration weights are used to correct for the error introduced by the ranging
+
+There is room for improvement in the way that the existing approach determines the trilateration weights. These weights represent the accuracy of the distance estimations and it
+
+
+The existing approach determines the trilateration weights in a very simple method. These weights represent the accuracy of the distance estimation and 
+There is room for improvement in the way that the existing 
+
+
+To determine the weights the existing approach 
+
+assumes that the ranging error increases with distance to the AN. But the ranging error is a function of the location. So I propose to determine the weights using a rougth aproximation of the MN loacation.
+I suspect that the ranging error is primarily influenced by obstructions to the Wi-Fi signal (walls, wires etc) and therefore it should be 
+It asses the accuracy of \(d_i\) based only on \(d_i\) itself.
+The ranging error is a function of the location and I suspect that its main influence are the obstructions to the Wi-Fi signal (walls, wires, etc.) This means that inside a given room the error sould be  
+ \red{It is assumed that the ranging error increases with distance to the AN.}
+The existing approach asses the accuracy of \(d_i\) based only on \(d_i\) itself. I suspect that the 
+\red{I think that the localization can be improved by finding a better way to determine the weights used for the trilateration.} These weights reflect how accurate the estimated distance to a AN is. The existing approach asses the accuracy of \(d_i\) based only on \(d_i\) itself. I propose to assess the accuracy based on the room the device is currently in. This means adding a room recognition layer to the system. Which would detect in which room the device is currently in and, using that knowledge, calculate a set of weights for the trilateration.
+
+\noindent The new approach would look like this:
+
+\note{Insert diagramm here}
+
+
+
+This approach requires a simple but reliable method for room room recognition and also a model
+
+that this accuracy is dependent on the location on the device, as the walls between the ANs and the MN change with location. I assume that the accuracy of the estimation is somewhat static inside one room (beacuse there are no majour distuption to the signal). This means that when we already know the room the device in located in, we can can then determine a good set of weights for the trilateration.
+So the proposed system would look like this:
+
+\note{insert diagramm}
+
+So the main approach is not changed. There is only a separate room recognition layer that determines the weights \(w_{i}\) for the triangulation.
+
+For this approach to work I need a simple, low cost, method for room recognition and a method to determine the weights based on the knowledge of the room.
+
 \subsection{Room Recognition}
+Because the roon recognition layer is only a small part of the location system, ist is not feasible for it to be a complex system, which is very difficult and time consuming to set up and implement. So the goal was to create a room recognition system which required no additional hardware (so it can run in the same environments as the basic approach), uses simple well known technology, and most importantly in not time consuming to implement.
+
+Because of their simplicity I decided to use a fingerprinting approach. The main problem with fingerprinting are the labor intensive maps. But in this case we do not need to measure the exact \((x,y)\)-coordinates of each sample, we only need to label each sample with a room number. This means the map becomes very easy to create, assuming the device has a hight enough samlping rate, one only needs to slowly walk through each room and "scan" it with the smartphone. This can potentially be done in a very short time. 
+
+The second thing to consider are which observation parameters to use as features in the fingerprintng map. In a best case we want a high number of atributes with hight local variability. We use the RSSI values as those are already used for the ranging and trilateration. Aditionally I use the magnetometer readings as previous research has shown its applicably for fingerprinting-localization.
+
+\subsection{Weighting}
+
+During the weighting step of my appoach the set of weights \(w_i\) need to be determined. The information avaliable are the distance estimations \(d_i\) and the output from the room recogniton, the room number. There are a number of different possible ways to do this:
+
+\begin{itemize}
+\item inversly proportional to the variance of mesurement errors (in this case distance estimation accuracy)
+\item based on the residuals
+\item based on the distance
+\item calculating optimal weights bevorehand based on known location
+\end{itemize}
+
 \subsection{Questions and Challenges}
+\begin{itemize}
+\item Where to take samples for room racognigon 
+\item Is the mageticfield good for room recogniton
+\item Is the accuracy hight enought to be useful
+\item How to determine the weights
+
+\end{itemize}

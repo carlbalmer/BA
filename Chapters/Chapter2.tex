@@ -5,6 +5,7 @@
 \label{Chapter2} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
 The goal of this chapter is to provide the reader with the knowledge required to understand the rest of this work. As such I will not only talk about the theory behind the fingerprinting, ranging and triangulation methods but also describe the important characteristics of the observation parameters \red{and the smartphone(Android API)}. Where \red{helpful} I will also mention some of the related work or additional reading.
+\note{rework this section: add comment for what I use the different technologies}
 
 %----------------------------------------------------------------------------------------
 %	SECTION 1
@@ -119,6 +120,7 @@ To perform multy-class classification the "one-against-one" approach can be used
 
 
 \section{Ranging}
+\label{Ranging}
 
 The ranging process estimates the distance between the ANs and the MN based on the radio parameters, in this case RSSI. This is done with non-linear regression (NLR) and the following path loss model proposed by \cite{li2015passiveWIFIsource}:
 \begin{equation}
@@ -166,3 +168,5 @@ argmin_{x,y}\sum_{i=1}^{n}w_{i}\left ( d_{i} - \sqrt{\left ( \tilde{x_{i}}-x \ri
 This can be done using a optimization algorithm like "Levenberg–Marquardt" or "Gauss-Newton".
 
 \red{The variance on the errors is not constant; Some distance estimation are more accurate than others. This can be taken into account with the set of weights \(w_{i}\) by applying a high weight to the more accurate estimations and a small weight to the inaccurate ones. This can improve the localization, but it is difficult determine the accuracy of the estimations.}
+\note{should I add a separate subsection for Weighting?}
+\note{These weights reflect how accurate the estimated distance to a AN is.}
