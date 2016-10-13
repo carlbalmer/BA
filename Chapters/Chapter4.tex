@@ -1,4 +1,56 @@
-\chapter{Development and concrete Implementation} % Main chapter title
+\chapter{Development and concrete Implementation}
 
-\label{Chapter4} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
+\label{Chapter4}
 
+In this chapter I will first talk about some of the challenges and question that came up during the implementation and how they were solved. Then i will explain the concrete implementation I ended up with.
+
+\section{Development}
+
+\subsection{Room Recognition}
+
+I wanted to test the feasibility of my proposed room recognition in a small testbead first. And there were also some other question that needed to be answered:
+\begin{itemize}
+\item What is the best way to gather the RPs for the fingerprinting-map
+\item Does the system even work / what accuracy can I expect.
+\item Is the magnetometer data useful. Does it improve the accuracy.
+\end{itemize}
+I used my appartment as the testbead. It consists of 2 rooms, an entré and the kitchen. For the accesspoint i used the accespoints that already existed. So my accespoint and those of my neighbours. So the location of the accespoint is unknown.
+
+To answer the first question I gathered a number of different fingerprinting maps and then cross validated their accuracy.
+
+The fingerprinting maps were:
+
+\begin{itemize}
+\item Low density grid.
+\item High density grid.
+\item Verry high density at borders
+\item Verry low density at the center.
+\end{itemize}
+
+I combined these data-sets to generate fingerprinting-maps with different properties. I then trained a SVM model with the the maps and used the other sets as testing data. These result may not be 100\% comparable but they suffice to draw a conclusion for my question.
+
+\note{insert table}
+
+As you can see the best performing map was the borders+doors+center map. This also makes sense consicering the therory of SWN as the borders end up being the support vectors that define the hyperplane and the point in the center are less important.
+
+Finally I compared the performance with and without magnetic field data.
+
+\note{nsert table}
+
+This confirms that the magnetic field offers much information for localization.
+
+\subsection{Weighting}
+
+To find out which weighting method performs best. Or if the the room information is actually improving the weighting I. 
+
+\subsubsection{Inversely proportional weights}
+
+\section{Concrete Implementation}
+
+There are a number of questions and challenges that need to be answered and overcome during the development:
+\begin{itemize}
+\item Where to take samples for room racognigon 
+\item Is the mageticfield good for room recogniton
+\item Is the accuracy hight enought to be useful
+\item How to determine the weights
+\end{itemize}

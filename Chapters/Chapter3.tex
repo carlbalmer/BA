@@ -8,7 +8,13 @@ In this chapter I will briefly explain the existing localization approach and th
 
 The following diagram shows the exiting approach that was used for previous work in the CDS group \cite{josePaper}:
 
-\note{insert diagramm}
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\textwidth]{Figures/existingAproach}
+\decoRule
+\caption[The existing approach]{Block diagram of the existing approach.}
+\label{fig:existingApproach}
+\end{figure}
 
 It is a range-based approach and consists of two main phases. In the first phase, the training phase, a small number of training samples are gathered from the building. These samples are value-label pairs with the value being the \(RSSIs\) received from the different ANs and the label the \(x,y\) coordinates of the current location in the building. The samples are gathered with a smartphone. \red{In the case of \cite{josePaper} 20 points were used for a floor with approximate 250m\textsuperscript{2} and eight rooms}. The training samples are then used to train the ranging models explained in chapter \ref{Ranging}.
 
@@ -16,67 +22,56 @@ It is a range-based approach and consists of two main phases. In the first phase
 
 \section{Proposed Improvements}
 
-There is room for improvement in the way that the existing approach determines the trilateration weights. These weights are used to correct for the error introduced by the ranging. So to determine the weights \red{we} need to know the ranging error. The existing approach makes the simple assumption, that the ranging error increases with distance to the AN. \red{This means the error of \(d_i\) is } Supposed that the error is mainly affected by obstructions to the signal (walls, wires etc.). That would mean, that inside one room (where there are no obstructions to the signal) the error should be approximately the same. So if we knew the roon the device is currently in it would be possible to aproxymate the error and determine the weights.
+There is room for improvement in the way that the existing approach determines the trilateration weights. These weights are used to correct for the error introduced by the ranging. So to determine the weights one needs to know the ranging error. The existing approach makes the simple assumption, that the ranging error increases with distance to the AN. \red{This is not optimal as it assesses the error in \(d_i\) based only on \(d_i\) itself}.
 
-The trilateration weights are used to correct for the error introduced by the ranging
+Supposed that the error is mainly affected by obstructions to the signal (walls, wires etc.). This would mean, that inside one room where there are no major obstructions to the signal the error should be \red{approximately the same}. So it should be possible to get an accurate estimate of the ranging error based on the room the device is currently in, therefore improving the weights and achieving a more accurate trilateration and localization.
 
-There is room for improvement in the way that the existing approach determines the trilateration weights. These weights represent the accuracy of the distance estimations and it
-
-
-The existing approach determines the trilateration weights in a very simple method. These weights represent the accuracy of the distance estimation and 
-There is room for improvement in the way that the existing 
-
-
-To determine the weights the existing approach 
-
-assumes that the ranging error increases with distance to the AN. But the ranging error is a function of the location. So I propose to determine the weights using a rougth aproximation of the MN loacation.
-I suspect that the ranging error is primarily influenced by obstructions to the Wi-Fi signal (walls, wires etc) and therefore it should be 
-It asses the accuracy of \(d_i\) based only on \(d_i\) itself.
-The ranging error is a function of the location and I suspect that its main influence are the obstructions to the Wi-Fi signal (walls, wires, etc.) This means that inside a given room the error sould be  
- \red{It is assumed that the ranging error increases with distance to the AN.}
-The existing approach asses the accuracy of \(d_i\) based only on \(d_i\) itself. I suspect that the 
-\red{I think that the localization can be improved by finding a better way to determine the weights used for the trilateration.} These weights reflect how accurate the estimated distance to a AN is. The existing approach asses the accuracy of \(d_i\) based only on \(d_i\) itself. I propose to assess the accuracy based on the room the device is currently in. This means adding a room recognition layer to the system. Which would detect in which room the device is currently in and, using that knowledge, calculate a set of weights for the trilateration.
+So I propose a room recognition system based on which the weights for the trilateration are determined.
 
 \noindent The new approach would look like this:
 
-\note{Insert diagramm here}
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\textwidth]{Figures/proposedApporach}
+\decoRule
+\caption[The proposed approach]{Block diagram of the proposed approach.}
+\label{fig:proposedApproach}
+\end{figure}
 
+The main approach is not changed. It is extended by a \red{second layer}, which is responsible for determining the weights. This layer consist of a room recognition system based on fingerprinting and a weighting model \red{which relates room and weights}.
 
+During localization the room recognition system detects the current room \(\#R\) based on \(RSSI\) and magnetic field data \(M_{x,y,z}\). The weighting model then uses this knowledge to calculate the weights. \red{It may also take \(d_i\) into account.}
 
-This approach requires a simple but reliable method for room room recognition and also a model
-
-that this accuracy is dependent on the location on the device, as the walls between the ANs and the MN change with location. I assume that the accuracy of the estimation is somewhat static inside one room (beacuse there are no majour distuption to the signal). This means that when we already know the room the device in located in, we can can then determine a good set of weights for the trilateration.
-So the proposed system would look like this:
-
-\note{insert diagramm}
-
-So the main approach is not changed. There is only a separate room recognition layer that determines the weights \(w_{i}\) for the triangulation.
-
-For this approach to work I need a simple, low cost, method for room recognition and a method to determine the weights based on the knowledge of the room.
+This means that during the training phase not only the ranging model but also the fingerprint-map and the weighting model need to be created. Thus to keep the approach practical this creation process should be as simple as possible.
 
 \subsection{Room Recognition}
-Because the roon recognition layer is only a small part of the location system, ist is not feasible for it to be a complex system, which is very difficult and time consuming to set up and implement. So the goal was to create a room recognition system which required no additional hardware (so it can run in the same environments as the basic approach), uses simple well known technology, and most importantly in not time consuming to implement.
+The objective is a simple, easy to train system, which predicts the devices current room with high accuracy.
 
-Because of their simplicity I decided to use a fingerprinting approach. The main problem with fingerprinting are the labor intensive maps. But in this case we do not need to measure the exact \((x,y)\)-coordinates of each sample, we only need to label each sample with a room number. This means the map becomes very easy to create, assuming the device has a hight enough samlping rate, one only needs to slowly walk through each room and "scan" it with the smartphone. This can potentially be done in a very short time. 
+To achieve this I chose to use a fingerprinting method. The main problem with fingerprinting for \red{traditional} localization is that it needs a lot of reference points and for each reference point the exact location has to be measured. This is often very time consuming and therefore impractical.
 
-The second thing to consider are which observation parameters to use as features in the fingerprintng map. In a best case we want a high number of atributes with hight local variability. We use the RSSI values as those are already used for the ranging and trilateration. Aditionally I use the magnetometer readings as previous research has shown its applicably for fingerprinting-localization.
+However for room recognition the RPs only need to be labeled with a room number. In practice this means that\red{, depending on the sampling rate of the sensors,} a large number of RPs can be collected by walking once through each room and "scanning" it with the smartphone. Thus a high density map can be created in in a short time.
+
+The second thing to consider are which observation parameters to use as features in the fingerprinting map. In a best case there should be a high number of attributes with high local variability and they should not require any additional hardware or setup. It makes sense to use the RSSI values as those are already required for the ranging and trilateration. Additionally I chose use the magnetometer readings as previous research has shown its applicably for fingerprinting-localization.
+
+The fingerprinting map is used to train a multiclass SVM classifier, which is then employed during localization to predict the devices room.
 
 \subsection{Weighting}
 
-During the weighting step of my appoach the set of weights \(w_i\) need to be determined. The information avaliable are the distance estimations \(d_i\) and the output from the room recogniton, the room number. There are a number of different possible ways to do this:
+The Weighting step is where the final weights are calculated. This is done with a mathematical model, which relates the available information, \(d_i,\#R\) to a set of weights \(w_i\). This model should be created during the training phase. There are an number of possible methods to do this:
 
 \begin{itemize}
-\item inversly proportional to the variance of mesurement errors (in this case distance estimation accuracy)
-\item based on the residuals
-\item based on the distance
-\item calculating optimal weights bevorehand based on known location
+\item Define the weights as inversely proportional to the average variance of ranging errors in a room.
+
+For the training data the actual distance to the ANs is known. So by comparing the actual and estimated distances for all training samples in a room the ranging error can be predicted. This would lead to a separate set of weights for each room.
+\item Define the weights based on the residuals form OLS
+
+This would mean running the trilateration one as OSL with the training data and then choosing a set of weights so that the residuals are minimized for all training samples in a room. This again leads to a separate set of weights for each room.
+\item Incorporating the distance estimation into the above methods.
+
+The two above methods lead to a separate set of weights for each room. They do not take \(d_i\) into account. It could be beneficial to combine the room weights from the above method with the distance based weights from the existing approach. It could also be use to discredit impossibly large estimations.
+\item Calculating optimal weights based on the training data
+
+The location of a training sample is known. So it should be possible to calculate the weights which lead to the most accurate localization. 
 \end{itemize}
 
-\subsection{Questions and Challenges}
-\begin{itemize}
-\item Where to take samples for room racognigon 
-\item Is the mageticfield good for room recogniton
-\item Is the accuracy hight enought to be useful
-\item How to determine the weights
-
-\end{itemize}
+In the next chapter I will investigate which of these methods actually performs best.
