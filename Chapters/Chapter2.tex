@@ -123,9 +123,8 @@ To perform multy-class classification the "one-against-one" approach can be used
 \label{Ranging}
 
 The ranging process estimates the distance between the ANs and the MN based on the radio parameters, in this case RSSI. This is done with non-linear regression (NLR) and the following path loss model proposed by \cite{li2015passiveWIFIsource}:
-\begin{equation}
+\begin{equation} \label{eqn:non-linear path loss model}
 d_{i}=\alpha_{i}e^{\beta_{i}RSSI_{i}}
-\label{eqn:non-linear path loss model}
 \end{equation}
 It describes the loss of signal strength over the propagation distance. \(d_{i}\) is the estimated distance from the MN to the \(i\)-th AN, \(RSSI_{i}\) is the \(i\)-th AN's signal strength as measured by the MN and \(\alpha_{i}, \beta_{i}\) are environment variables specific to each AN.
 

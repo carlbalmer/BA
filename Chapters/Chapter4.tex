@@ -1,56 +1,111 @@
-\chapter{Development and concrete Implementation}
+\chapter{Measurement Setup and Evaluation}
 
 \label{Chapter4}
 
-In this chapter I will first talk about some of the challenges and question that came up during the implementation and how they were solved. Then i will explain the concrete implementation I ended up with.
+To evaluate my improvements i will first describe the test beds and data sets used for the evaluation. I will then talk about the experiment performed on the individual components, room recognition and weighting, and then present the final evaluation of the entire system.
 
-\section{Development}
+\section{Testbead and Datasets}
 
-\subsection{Room Recognition}
+There were two test beds used for this evaluation. A small one in my apartment and a lager test bed on the third floor of the IAM-building.
 
-I wanted to test the feasibility of my proposed room recognition in a small testbead first. And there were also some other question that needed to be answered:
+\subsection{Appartment}
+The test bed consisted of four rooms, a total of 55m\textsuperscript{2}, with a small central entré connecting to the three other rooms. For ANs the existing Wi-Fi infrastructure was used; The signal from seven Wi-Fi routers from my own and the neighboring apartments. \red{This means the location of the ANs was unknown.}
+\note{insert map here}
+
+\subsubsection{Data sets}
+All samples contained RSSI and magnetic field data and were labeled with the room numbers. Four different data-sets were gathered:
 \begin{itemize}
-\item What is the best way to gather the RPs for the fingerprinting-map
-\item Does the system even work / what accuracy can I expect.
-\item Is the magnetometer data useful. Does it improve the accuracy.
+\item Low density grid
+
+A set of evenly distributed samples gathered in a grid pattern with approximately 1m distance between them.
+
+\item High density grid
+
+The same as the above but here the distance between the samples is 0.5m.
+\item Borders
+
+This set only contains samples from the borders, meaning walls and doors between rooms. The samples were taken at a very high density; about every 20 to 30 cm along the borders.
+\item Center
+
+This set only contains four or five samples per room. They are taken in the center of the room, far away from the borders and with a large distance between them; 1.5m to 2.5m depending on the size of the room.
 \end{itemize}
-I used my appartment as the testbead. It consists of 2 rooms, an entré and the kitchen. For the accesspoint i used the accespoints that already existed. So my accespoint and those of my neighbours. So the location of the accespoint is unknown.
 
-To answer the first question I gathered a number of different fingerprinting maps and then cross validated their accuracy.
 
-The fingerprinting maps were:
+\subsection{IAM-Building}
+This test bed was located on the third floor of the IAM-Building. It consisted of eight rooms, seven individual rooms and a wide corridor that connects them. The area of interest is approximately 250m\textsuperscript{2}.
+
+The ANs, five commercial WiFi access points (Model: D-Link D-635/D-2553), a were positioned to provide maximum coverage inside the area. The beacon period is set to 100ms.
+
+\note{insert map here}
+
+\red{The origin of the coordinate system is on the outer bottom left corner of room number one.}
+
+\subsubsection{Data sets}
+For this test bed the following data-sets were collected:
+\begin{itemize}
+\item Fingerprinting Map
+
+This data-set was collected with the procedure outlined in section \ref{overviewRoomRecognition}. In total there are \red{500} samples labeled with a room number. Of those \red{450} are on the borders and the rest in the center of the rooms. 
+\item Room recognition testing data
+
+A set of evenly distributed samples only labeled with the room number collected in a grid pattern with approximately 1.5m distance between them. Intended to be used to evaluate the performance of the room recognition.
+
+\item Ranging data
+
+Set of \red{40} evenly distributed samples labeled with \(x,y\)-coordinates. 
+\end{itemize}
+
+\section{Experiment: Room Recognition}
+The goal of this experiment, as stated in section \ref{overviewRoomRecognition}, was to evaluate the performance of different fingerprinting maps.
+
+For this the four data sets from the apartment test bed were combined to generate fingerprinting maps with different characteristics. \red{The performance of these maps was determined by training a SVM classifier with the map and testing the classifier on the remaining data-sets not used for the map.}
+
+This was done both with and without using magnetic field data, in order to evaluate the impact \red{of magnetic field data} on the performance.
+
+\paragraph{Results}
+The results form this experiment are summarized in the table below. The fist row details the training data and the following rows the accuracy for a given test set, fist without and then with magnetic field data.
+
+\note{add average magnetic field data improvement}
+
+\paragraph{Discussion}
+
+The two main conclustion from this experiment are:
+
+\red{the best way to gather the maps is}
+
+\red{magnetic feld data is important}
+
+Furthermore this shows that simple room recognition can be achieved by easily and in residential eras with numerous wifi signals id doesn't even need additional infrastructure.
+\section{Experiment: Weighting}
+In this experiment different weighting models are compared in order to answer the question from section \ref{WeightingModelDefinition}.
+
+The models, both ranging and weighting, are trained with the entire \emph{Ranging data} set from the IAM-Building test bed. For evaluation the same data-set is used with the assumption of 100\% room recognition accuracy.
+
+The following models were compared:
 
 \begin{itemize}
-\item Low density grid.
-\item High density grid.
-\item Verry high density at borders
-\item Verry low density at the center.
+\item Room Weights
+\item Room + distance weights
+\item Room + distance weights with thresholds
+
+\note{insert description of models here}
 \end{itemize}
 
-I combined these data-sets to generate fingerprinting-maps with different properties. I then trained a SVM model with the the maps and used the other sets as testing data. These result may not be 100\% comparable but they suffice to draw a conclusion for my question.
+\paragraph{Results}
+One way to visualize the performance of localization systems is to plot the cumulative distribution function of the localization error. This allows for a more accurate representation of the performance than just using statistical values like the mean and standard deviation.
 
-\note{insert table}
+The performance if the weighting models is compared to distance based weights from the existing approach and weights using no weights at all (OLS).
 
-As you can see the best performing map was the borders+doors+center map. This also makes sense consicering the therory of SWN as the borders end up being the support vectors that define the hyperplane and the point in the center are less important.
+\paragraph{Discussion}
 
-Finally I compared the performance with and without magnetic field data.
+\section{Complete System}
 
-\note{nsert table}
+To evaluate the compete system I used the process described in section \ref{technicalImplementation}. The entire \emph{Ranging data} set was used for training and testing.
 
-This confirms that the magnetic field offers much information for localization.
+In a first step the room recognition is evaluated with two different testing data-sets. Then the localization error of the complete system is determined using the \emph{Ranging data} set for testing.
 
-\subsection{Weighting}
+\paragraph{Results}
 
-To find out which weighting method performs best. Or if the the room information is actually improving the weighting I. 
 
-\subsubsection{Inversely proportional weights}
+\paragraph{Discussion}
 
-\section{Concrete Implementation}
-
-There are a number of questions and challenges that need to be answered and overcome during the development:
-\begin{itemize}
-\item Where to take samples for room racognigon 
-\item Is the mageticfield good for room recogniton
-\item Is the accuracy hight enought to be useful
-\item How to determine the weights
-\end{itemize}

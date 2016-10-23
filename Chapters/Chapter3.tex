@@ -1,8 +1,8 @@
-\chapter{The localization approach} % Main chapter title
+\chapter{The localization system} % Main chapter title
 
 \label{Chapter3} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
-In this chapter I will briefly explain the existing localization approach and then go into detail about my proposed improvements.
+In this chapter I will briefly explain the existing localization approach and then go into detail about my proposed improvements.\note{Better explain why I'm talking about Room recognition and Weighting in detail.}
 
 \section{The existing approach}
 
@@ -44,6 +44,8 @@ During localization the room recognition system detects the current room \(\#R\)
 
 This means that during the training phase not only the ranging model but also the fingerprint-map and the weighting model need to be created. Thus to keep the approach practical this creation process should be as simple as possible.
 
+\red{The main focus of this work is this second layer and its components the room recognition and weighting.} 
+
 \subsection{Room Recognition}
 The objective is a simple, easy to train system, which predicts the devices current room with high accuracy.
 
@@ -51,27 +53,97 @@ To achieve this I chose to use a fingerprinting method. The main problem with fi
 
 However for room recognition the RPs only need to be labeled with a room number. In practice this means that\red{, depending on the sampling rate of the sensors,} a large number of RPs can be collected by walking once through each room and "scanning" it with the smartphone. Thus a high density map can be created in in a short time.
 
-The second thing to consider are which observation parameters to use as features in the fingerprinting map. In a best case there should be a high number of attributes with high local variability and they should not require any additional hardware or setup. It makes sense to use the RSSI values as those are already required for the ranging and trilateration. Additionally I chose use the magnetometer readings as previous research has shown its applicably for fingerprinting-localization.
+The second thing to consider are which observation parameters to use as features in the fingerprinting map. In a best case there should be a high number of attributes with high local variability and they should not require any additional hardware or setup. It makes sense to use the RSSI values as those are already required for the ranging and trilateration. Additionally I chose to use the magnetometer readings as previous research has shown its applicably for fingerprinting-localization.
+
+\note{mention the third problem: how to collect pints and put in a better seaway into the development part}
 
 The fingerprinting map is used to train a multiclass SVM classifier, which is then employed during localization to predict the devices room.
+\subsubsection{Development}
+\label{overviewRoomRecognition}
+I used my apartment as a small test bed to test the feasibility of this proposed room recognition system. The objective was to answer the following questions:
+\begin{itemize}
+\item \red{What is the best way to gather the RPs for the fingerprinting-map How many RPs are needed and how does their distribution affect the accuracy?}
+\item How does the magnetic field data influence the accuracy. Does it improve the accuracy as presumed?
+\item What accuracy can be expected form the system. Does it even achieve high enough accuracy?
+\end{itemize}
+
+To answer the first question I gathered a number of fingerprinting maps with different properties and evaluated their accuracy.
+
+This experiment concluded that the highest accuracy could be achieved by taking a lot of RPs at the borders of the room (doors, walls between rooms) and only a few in the center.This conclusion is also supported by the theory of SWM as the RPs at the borders end up being the support vectors that define the hyperplane.
+
+Using this technique I was able to achieve a \note{inser percent} accuracy. \red{Which I think schould be enough for this use case.}
+
+I also compared the performance with and without magnetic field data. Including the magnetic field data generally increased the accuracy by \note{inset percent here}
 
 \subsection{Weighting}
 
-The Weighting step is where the final weights are calculated. This is done with a mathematical model, which relates the available information, \(d_i,\#R\) to a set of weights \(w_i\). This model should be created during the training phase. There are an number of possible methods to do this:
+The Weighting step is where the final weights are calculated. This is done with a mathematical model, which relates the available information, \(d_i,\#R\) to a set of weights \(w_i\). This model should be created during the training phase.
+
+For the training data the actual distance to the ANs is known. So by comparing the actual and estimated distances for all training samples in a room the ranging error can be calculated. The weights can then be defined as inversely proportional to the average variance of ranging errors in a room. This would lead to a separate set of weights for each room.
+
+The above method does not take \(d_i\) into account. It could be beneficial to combine the room weights with the distance based weights from the existing approach. \(d_i\) could also be use to discredit impossibly large estimations.
+
+\subsubsection{Development}
+\label{WeightingModelDefinition}
+
+In order to test these hypothesis and determine the best performing weighting model, I experimented with different ways to calculate and combine the room and distance weights.
+
+For this I used the dataset gatered from the third floor of the \red{IAM-Building}. The performance of the different methods was asses under the assumption of 100\% room recognitoin accuracy and then compared with OLS and the distance weights form the existing approach.
+
+\red{From this experiment I found out, that the room weights by themselves already performed quit well. Combining them with the distance weights removes some of the outlines and generally improves the performance. Not considering the outlines in the room weights calculation decreased the performance.}
+
+To conclude the final weighting method is this:
+
+\note{insert formula}
+
+\section{Technical Implementation}
+\label{technicalImplementation}
+
+This is the implementation of the system, that was used for the evaluation. The smartphone is only used to gather the data sets. All the calculations are then done on a computer using Matlab, libSVM and a custom java tool for the trilateration. In the training phase the data-sets are collected and the models are trained. The ranging and weighting models are then imported into the trilateration tool.
+
+For localization or testing the testing data is first given to the libSVM predict function together with the room recognition model to predict the room number. Next the testing data and room predictions are handed to the trilateration tool. It applies both the ranging and weighting models and then solves the trilateration problem with a Levenberg-Marquardt optimizer. Finally it calculates the accuracy and prints everything to a file.
+
+Below the process for the data collection and model generation is covered in mode detail:
+
+\subsection{Training Phase}
+\subsubsection{Collecting the data-sets}
+
+The data-sets are collected with the smartphone (Model: OnePus One) using a small application written for this purpose. The samples consist of a RSSI value for each AN, the magnetic field strength in \(\mu\)-Tesla along the devices x,y and z axis and a label. They are taken by holding the smartphone horizontally approximately one meter above the ground and averaging over five 
+consecutive RSSI and magnetometer measurements.
+
+All samples have to be taken with the smartphone pointing in the same cardinal direction, because the magnetometer readings are dependent upon the orientation of the device.
+
+\note{Maybe talk about the sampling rate}
+
+Two data-sets are collected:
 
 \begin{itemize}
-\item Define the weights as inversely proportional to the average variance of ranging errors in a room.
+\item The fingerprinting map
 
-For the training data the actual distance to the ANs is known. So by comparing the actual and estimated distances for all training samples in a room the ranging error can be predicted. This would lead to a separate set of weights for each room.
-\item Define the weights based on the residuals form OLS
+It contains a high number of samples labeled with a room number. They are collected using the procedure detailed in section \ref{overviewRoomRecognition}.
+\note{detail procedure in section above}
 
-This would mean running the trilateration one as OSL with the training data and then choosing a set of weights so that the residuals are minimized for all training samples in a room. This again leads to a separate set of weights for each room.
-\item Incorporating the distance estimation into the above methods.
+\item Ranging data
 
-The two above methods lead to a separate set of weights for each room. They do not take \(d_i\) into account. It could be beneficial to combine the room weights from the above method with the distance based weights from the existing approach. It could also be use to discredit impossibly large estimations.
-\item Calculating optimal weights based on the training data
-
-The location of a training sample is known. So it should be possible to calculate the weights which lead to the most accurate localization. 
+This contains a smaller number of points which are labeled with \(x,y\)-coordinates. They should be evenly distributed over the area of the test bed.
 \end{itemize}
 
-In the next chapter I will investigate which of these methods actually performs best.
+\subsubsection{Training the Models}
+
+\subsubsection{Room Recognition}
+The SVM is trained with an automated script provided by the libSVM library. It generates a multiclass SVM model from the fingerprinting map \red{using cross validation to determine the best value for C}.
+
+\subsubsection{Ranging}
+For the ranging model the \(\alpha, \beta\) parameters from equation \ref{eqn:non-linear path loss model} need to be determined for each AN. So in a spreadsheet the distance between the AN and the samples is calculated from the ranging data. This results in a list of distances and RSSI values. Matlabs function fit tool is then used to find the \(\alpha, \beta\)-values that best fit this data.
+\note{Insert example image here}
+
+As apparent in the example above, this non-linear path loss model is inaccurate with high RSSI values. To account for that the distances for these values are set by hand.
+
+So at the end the model looks like this:
+
+\note{insert formula here}
+
+\subsubsection{Weighting}
+
+The room weights are determined by hand in a spreadsheet based on the formal definition given in section \ref{WeightingModelDefinition}
+\note{talk about implementation of dinamic factor in java}
