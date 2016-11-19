@@ -10,22 +10,22 @@ There were two test beds used for this evaluation. A small one in my apartment a
 
 \subsection{Appartment}
 The test bed consisted of four rooms, a total of 55m\textsuperscript{2}, with a small central entré connecting to the three other rooms. For ANs the existing Wi-Fi infrastructure was used; The signal from seven Wi-Fi routers from my own and the neighboring apartments. \red{This means the location of the ANs was unknown.}
-\note{insert map here}
+\note{maybe insert map here}
 
 \subsubsection{Data sets}
 All samples contained RSSI and magnetic field data and were labeled with the room numbers. Four different data-sets were gathered:
 \begin{itemize}
-\item Low density grid
+\item Low density grid (42 Samples)
 
 A set of evenly distributed samples gathered in a grid pattern with approximately 1m distance between them.
 
-\item High density grid
+\item High density grid (186 Samples)
 
 The same as the above but here the distance between the samples is 0.5m.
-\item Borders
+\item Borders (67 Samples)
 
 This set only contains samples from the borders, meaning walls and doors between rooms. The samples were taken at a very high density; about every 20 to 30 cm along the borders.
-\item Center
+\item Center (23 Samples)
 
 This set only contains four or five samples per room. They are taken in the center of the room, far away from the borders and with a large distance between them; 1.5m to 2.5m depending on the size of the room.
 \end{itemize}
@@ -65,11 +65,45 @@ This was done both with and without using magnetic field data, in order to evalu
 \paragraph{Results}
 The results form this experiment are summarized in the table below. The fist row details the training data and the following rows the accuracy for a given test set, fist without and then with magnetic field data.
 
+\begin{table}
+\caption{Performance of the room recognition with different fingerprinting maps}
+\label{tab:AccuracyRoomRecognitionExperiment}
+\centering
+\begin{tabular}{l l l l l}
+\toprule
+\tabhead{Training Data (\#Samples)} & \multicolumn{4}{c}{\tabhead{Testing Data (w/o \(B\)|w/ \(B\))}} \\
+\midrule
+LD (42) & - & 78.5\%|77.4\% & 55.2\%|61.2\% & 100\%|100\%\\
+HD (186) & 88.0\%|78.57\%& - & 73.1\%| 76.1\% & 100\%|100\%\\
+B (67) & 83.3\%|66.7\% & 81.7\%| 81.1& - & 91.3\%|95.7\\
+B+C (90) & 85.7\%|83.5\% & 88.7\%|85.5\% & - & -\\
+B+LD (109) & - & 84.9\%|85.5\% & - & 95.7\%|100\%\\
+\bottomrule\\
+\end{tabular}
+\end{table}
+
+\begin{table}
+\caption{Performance of the room recognition with different fingerprinting maps}
+\label{tab:AccuracyRoomRecognition}
+\centering
+\begin{tabular}{l l l l l}
+\toprule
+\tabhead{Training Data (\#Samples)} & \multicolumn{4}{c}{\tabhead{Testing Data (w/o \(B\)|w/ \(B\))}} \\
+\midrule
+LD (42) & - & 69.4\%|66.6\% & 50.7\%|54\% & 87.0\%|87.0\%\\
+HD (186) & 78.6\%|66.7\%& - & 47.8\%|55.22\% & 78.3\%|87.0\%\\
+B (67) & 57.1\%|50.0\% & 58.6\%|59.1\% & - & 56.52\%|43.5\%\\
+B+C (90) & 61.9\%|71.4\% & 57.0\%|66.1& - & -\\
+B+LD (109) & - & 76.9\%|69.9\% & - & 82.6\%|87.0\%\\
+\bottomrule\\
+\end{tabular}
+\end{table}
+
 \note{add average magnetic field data improvement}
 
 \paragraph{Discussion}
 
-The two main conclustion from this experiment are:
+The two main conclusions from this experiment are:
 
 \red{the best way to gather the maps is}
 
