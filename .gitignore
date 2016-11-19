@@ -15,3 +15,7 @@ main.run.xml
 main.synctex.gz
 main.toc
 texput.log
+main.bbl
+main.blg
+Chapters/*.log
+
