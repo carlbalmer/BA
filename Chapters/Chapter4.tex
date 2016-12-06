@@ -1,145 +1,90 @@
-\chapter{Measurement Setup and Evaluation}
+\chapter{Localization system implementation}
 
 \label{Chapter4}
 
-To evaluate my improvements i will first describe the test beds and data sets used for the evaluation. I will then talk about the experiment performed on the individual components, room recognition and weighting, and then present the final evaluation of the entire system.
+In order to develop and evaluate the system outlined in Chapter \ref{Chapter3}, it is first required to establish a testing environment.
+This chapter introduces the \red{technical} implementation of the localization system in a test bed.
 
-\section{Testbead and Datasets}
+\section{System Overview}
 
-There were two test beds used for this evaluation. A small one in my apartment and a lager test bed on the third floor of the IAM-building.
+The test bed consists of multiple AN, a MN and a computer.
 
-\subsection{Appartment}
-The test bed consisted of four rooms, a total of 55m\textsuperscript{2}, with a small central entré connecting to the three other rooms. For ANs the existing Wi-Fi infrastructure was used; The signal from seven Wi-Fi routers from my own and the neighboring apartments. \red{This means the location of the ANs was unknown.}
-\note{maybe insert map here}
+The ANs are commercial WiFi access pints, which are placed in the \red{area of interest} and constantly broadcast a beacon signal.
 
-\subsubsection{Data sets}
-All samples contained RSSI and magnetic field data and were labeled with the room numbers. Four different data-sets were gathered:
-\begin{itemize}
-\item Low density grid (42 Samples)
+The MN, an android smartphone, is used to collect samples form different location in the area of interest. 
 
-A set of evenly distributed samples gathered in a grid pattern with approximately 1m distance between them.
+The collected samples are transferred to the computer where the calculations and algorithms for training, testing and evaluating the system can be executed.
 
-\item High density grid (186 Samples)
-
-The same as the above but here the distance between the samples is 0.5m.
-\item Borders (67 Samples)
-
-This set only contains samples from the borders, meaning walls and doors between rooms. The samples were taken at a very high density; about every 20 to 30 cm along the borders.
-\item Center (23 Samples)
-
-This set only contains four or five samples per room. They are taken in the center of the room, far away from the borders and with a large distance between them; 1.5m to 2.5m depending on the size of the room.
-\end{itemize}
-
-
-\subsection{IAM-Building}
-This test bed was located on the third floor of the IAM-Building. It consisted of eight rooms, seven individual rooms and a wide corridor that connects them. The area of interest is approximately 250m\textsuperscript{2}.
-
-The ANs, five commercial WiFi access points (Model: D-Link D-635/D-2553), a were positioned to provide maximum coverage inside the area. The beacon period is set to 100ms.
-
-\note{insert map here}
-
-\red{The origin of the coordinate system is on the outer bottom left corner of room number one.}
-
-\subsubsection{Data sets}
-For this test bed the following data-sets were collected:
-\begin{itemize}
-\item Fingerprinting Map
-
-This data-set was collected with the procedure outlined in section \ref{overviewRoomRecognition}. In total there are \red{500} samples labeled with a room number. Of those \red{450} are on the borders and the rest in the center of the rooms. 
-\item Room recognition testing data
-
-A set of evenly distributed samples only labeled with the room number collected in a grid pattern with approximately 1.5m distance between them. Intended to be used to evaluate the performance of the room recognition.
-
-\item Ranging data
-
-Set of \red{40} evenly distributed samples labeled with \(x,y\)-coordinates. 
-\end{itemize}
-
-\section{Experiment: Room Recognition}
-The goal of this experiment, as stated in section \ref{overviewRoomRecognition}, was to evaluate the performance of different fingerprinting maps.
-
-For this the four data sets from the apartment test bed were combined to generate fingerprinting maps with different characteristics. \red{The performance of these maps was determined by training a SVM classifier with the map and testing the classifier on the remaining data-sets not used for the map.}
-
-This was done both with and without using magnetic field data, in order to evaluate the impact \red{of magnetic field data} on the performance.
-
-\paragraph{Results}
-The results form this experiment are summarized in the table below. The fist row details the training data and the following rows the accuracy for a given test set, fist without and then with magnetic field data.
-
-\begin{table}
-\caption{Performance of the room recognition with different fingerprinting maps}
-\label{tab:AccuracyRoomRecognitionExperiment}
+\begin{figure}[ht]
 \centering
-\begin{tabular}{l l l l l}
-\toprule
-\tabhead{Training Data (\#Samples)} & \multicolumn{4}{c}{\tabhead{Testing Data (w/o \(B\)|w/ \(B\))}} \\
-\midrule
-LD (42) & - & 78.5\%|77.4\% & 55.2\%|61.2\% & 100\%|100\%\\
-HD (186) & 88.0\%|78.57\%& - & 73.1\%| 76.1\% & 100\%|100\%\\
-B (67) & 83.3\%|66.7\% & 81.7\%| 81.1& - & 91.3\%|95.7\\
-B+C (90) & 85.7\%|83.5\% & 88.7\%|85.5\% & - & -\\
-B+LD (109) & - & 84.9\%|85.5\% & - & 95.7\%|100\%\\
-\bottomrule\\
-\end{tabular}
-\end{table}
+\includegraphics[width=\textwidth]{Figures/SystemImplementationOverview}
+\decoRule
+\caption[localization system overview]{Diagram of the test bed implementation}
+\label{fig:existingApproach}
+\end{figure}
 
-\begin{table}
-\caption{Performance of the room recognition with different fingerprinting maps}
-\label{tab:AccuracyRoomRecognition}
-\centering
-\begin{tabular}{l l l l l}
-\toprule
-\tabhead{Training Data (\#Samples)} & \multicolumn{4}{c}{\tabhead{Testing Data (w/o \(B\)|w/ \(B\))}} \\
-\midrule
-LD (42) & - & 69.4\%|66.6\% & 50.7\%|54\% & 87.0\%|87.0\%\\
-HD (186) & 78.6\%|66.7\%& - & 47.8\%|55.22\% & 78.3\%|87.0\%\\
-B (67) & 57.1\%|50.0\% & 58.6\%|59.1\% & - & 56.52\%|43.5\%\\
-B+C (90) & 61.9\%|71.4\% & 57.0\%|66.1& - & -\\
-B+LD (109) & - & 76.9\%|69.9\% & - & 82.6\%|87.0\%\\
-\bottomrule\\
-\end{tabular}
-\end{table}
+This test bed implementation splits the system into an online \red{(collecting samples)} and offline \red{(calculations on the computer)} part. This allows easily try out and empirically compare different configurations of the localisation system under the exact same conditions.
 
-\note{add average magnetic field data improvement}
+The set-up of this test bed comprises both hardware and software specific configurations for each component. The remainder of this section details these configurations.
 
-\paragraph{Discussion}
+\section{Hardware Set-up}
 
-The two main conclusions from this experiment are:
+This set-up requires three different kinds of machines. One for the AN, another for the MN and a computer. \red{There are no special requirements for the computer it only has to be able to execute Java code.}
 
-\red{the best way to gather the maps is}
+For the AN and MN the following hardware was employed:
 
-\red{magnetic feld data is important}
+\paragraph{Anchor Nodes}
+The commercial Wi-Fi access points used as anchor nodes are of the model D-Link D-635 and D-2553. They are set-up with a beacon period of 100ms and broadcast on the 2.4 GHz frequency band.
 
-Furthermore this shows that simple room recognition can be achieved by easily and in residential eras with numerous wifi signals id doesn't even need additional infrastructure.
-\section{Experiment: Weighting}
-In this experiment different weighting models are compared in order to answer the question from section \ref{WeightingModelDefinition}.
+\paragraph{Mobile Node}
 
-The models, both ranging and weighting, are trained with the entire \emph{Ranging data} set from the IAM-Building test bed. For evaluation the same data-set is used with the assumption of 100\% room recognition accuracy.
-
-The following models were compared:
+The mobile node is an android smartphone of the model \emph{One Plus One}. It has the following specifications:
 
 \begin{itemize}
-\item Room Weights
-\item Room + distance weights
-\item Room + distance weights with thresholds
-
-\note{insert description of models here}
+\item \textbf{OS:} Android 5.1
+\item \textbf{Processor:} 2.5GHz Quad-core CPU
+\item \textbf{WiFi module:} Qualcomm WCN3680 802.11ac/FM/BT 4.0 Combo Chip 
+\item \textbf{Internal sensors:} accelerometer, magnetometer, gyroscope, proximity, ambient light
+\item \textbf{Memory:} 3 GB RAM
 \end{itemize}
 
-\paragraph{Results}
-One way to visualize the performance of localization systems is to plot the cumulative distribution function of the localization error. This allows for a more accurate representation of the performance than just using statistical values like the mean and standard deviation.
-
-The performance if the weighting models is compared to distance based weights from the existing approach and weights using no weights at all (OLS).
-
-\paragraph{Discussion}
-
-\section{Complete System}
-
-To evaluate the compete system I used the process described in section \ref{technicalImplementation}. The entire \emph{Ranging data} set was used for training and testing.
-
-In a first step the room recognition is evaluated with two different testing data-sets. Then the localization error of the complete system is determined using the \emph{Ranging data} set for testing.
-
-\paragraph{Results}
+The WiFi module and the magnetometer are used to collect the samples.
 
 
-\paragraph{Discussion}
+\section{Software Set-up}
 
+\subsection{Sample collection}
+
+The samples are collected on the smartphone using a small application written for this purpose.
+
+The samples consist of:
+\begin{itemize}
+\item \textbf{A label} eather indicating the room or the exact location where the sample was taken.
+\item \textbf{A set of RSSI values}, one for each AN.
+\item \textbf{The magnetic field strength} in \(\mu\)-Tesla along the devices x,y and z axis.
+\end{itemize}
+
+On android the WiFi module can not be accessed directly. Wi-Fi scans have to be initiated through the \code{AndroidAPI} and it only supports full scans\cite{brouwers2014incremental}. Full scans take longer so it is only possible to take one RSSI measurement every 1.5 seconds.
+
+To collect one sample the application takes the average of five RSSI and magnetometer measurements, each spaced 2 seconds apart. The samples are then saved to a \code{.csv} file on the smartphones internal storage and later transferred to the computer.
+
+\subsection{Offline set-up}
+
+Training, testing and evaluation of the localization system is done offline on a computer using a collection of different tools. For this purpose the collected samples are grouped into training and testing datasets. First the models for ranging, room recognition and weighting are created. These are then imported into a Java program which read
+
+\subsubsection*{Room Recognition}
+\red{The SVM is trained with an automated script provided by the libSVM library. It generates a multiclass SVM model from the fingerprinting map using cross validation to determine the best value for C and gamma}.
+\note{change to WEKA}
+
+\subsubsection*{Ranging}
+For the ranging model the \(\alpha, \beta\) parameters from equation \ref{eqn:non-linear path loss model} need to be determined for each AN. So in a spreadsheet the distance between the AN and the samples is calculated from the ranging data. This results in a list of distances and corresponding RSSI values. Matlabs function fit tool is then used to find the \(\alpha, \beta\)-values that best fit this data.
+\note{Insert example image here}
+
+As apparent in the example above, this non-linear path loss model is inaccurate with high RSSI values. To account for that the distances for these high values are set by hand.
+
+\subsubsection*{Weighting}
+
+The room weights are determined by hand in a spreadsheet based on the formal definition given in section \ref{WeightingModelDefinition}
+\note{talk about implementation of dinamic factor in java}
+
+\subsection{Testing the Models}

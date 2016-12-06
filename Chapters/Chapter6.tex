@@ -1,38 +1,20 @@
-\chapter{Implementation}
+\chapter{Conclusion}
 
-\label{Chapter6}
+\label{Chapter5}
 
-In this chapter I will introduce the equipment and software used. I will also detail the models used and how everything works together to form the system.
-
-The smartphone is only used to collect the data. All calculations are then done on a computer. This is done for simplicity reasons. The process could easily be implemented on the smartphone.
-
-\section{Training Phase}
-
-During the training phase the necessary data is gathered and all the models are created.
-
-The smartphone is used to collect two sets of data:
-
-\begin{itemize}
-\item The fingerprinting map consisting of RSSI and Mxyz labeld with the roomnumber.
-\item The ranging and testing data consisting of RSSI and Mxyz labeled with x,y coordinates
-\end{itemize}
-
-\begin{itemize}
-\item Define the weights as inversely proportional to the average variance of ranging errors in a room.
-
-For the training data the actual distance to the ANs is known. So by comparing the actual and estimated distances for all training samples in a room the ranging error can be calculated. This would lead to a separate set of weights for each room.
-
-\item Incorporating the distance estimation into the above method.
-
-The above method leads to a separate set of weights for each room. It does not take \(d_i\) into account. It could be beneficial to combine the room weights from the above method with the distance based weights from the existing approach. It could also be use to discredit impossibly large estimations.
-\item Calculating optimal weights based on the training data
-
-The location of a training sample is known. So it should be possible to calculate the weights which lead to the most accurate localization. 
-\end{itemize}
-
-In the next chapter I will investigate which of these methods actually performs best.
-\note{Maybe put some of theis into the next chapter}
+\section{Summary and Conclusion}
 
 
+Indoor localization remains a challenging problem in computer science.
 
+In this thesis I propose and develop a room recognition system based on WiFi signals and the magnetic field. I suggest to add this system to a the existing localization approach and use the information it provides to determine better weights for the trilateration and therefore improve the localization.
+
+I carry out two experiments to optimize the room recognition and to determine the best performing weighting model.
+
+Finally I implement my new approach in a large test bed and evaluate its performance.
+
+Concerning the room recognition I conclude that it is...
+\subsection{Possible future work}
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam ultricies lacinia euismod. Nam tempus risus in dolor rhoncus in interdum enim tincidunt. Donec vel nunc neque. In condimentum ullamcorper quam non consequat. Fusce sagittis tempor feugiat. Fusce magna erat, molestie eu convallis ut, tempus sed arcu. Quisque molestie, ante a tincidunt ullamcorper, sapien enim dignissim lacus, in semper nibh erat lobortis purus. Integer dapibus ligula ac risus convallis pellentesque.
 

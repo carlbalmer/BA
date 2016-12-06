@@ -1,0 +1,96 @@
+\chapter{Copy Paste}
+
+The samples consist of a RSSI value for each AN, the magnetic field strength in \(\mu\)-Tesla along the devices x,y and z axis and a label. They are taken by holding the smartphone horizontally approximately one meter above the ground and averaging over five 
+consecutive RSSI and magnetometer measurements.
+
+All samples have to be taken with the smartphone pointing in the same cardinal direction, because the magnetometer readings are dependent upon the orientation of the device.
+
+\note{Maybe talk about the sampling rate}
+
+Two data-sets are collected:
+
+\begin{itemize}
+\item The fingerprinting map
+
+It contains a high number of samples labeled with a room number. They are collected using the procedure detailed in section \ref{overviewRoomRecognition}.
+\note{detail procedure in section above}
+
+\item Ranging data
+
+This contains a smaller number of points which are labeled with \(x,y\)-coordinates. They should be evenly distributed over the area of the test bed.
+\end{itemize}
+
+These samples consist of:
+\begin{itemize}
+\item \textbf{A label} eather indicating the room or the exact location where the sample was taken.
+\item \textbf{A set of RSSI values}, one for each AN.
+\item \textbf{The magnetic field strength} in \(\mu\)-Tesla along the devices x,y and z axis.
+\end{itemize}
+
+\section{Testbead and Datasets}
+
+There were two test beds used for this evaluation. A small one in my apartment and a lager test bed on the third floor of the IAM-building.
+
+\subsection{Appartment}
+The test bed consisted of four rooms, a total of 55m\textsuperscript{2}, with a small central entré connecting to the three other rooms. For ANs the existing Wi-Fi infrastructure was used; The signal from seven Wi-Fi routers from my own and the neighboring apartments. \red{This means the location of the ANs was unknown.}
+\note{maybe insert map here}
+
+\subsection{technical implementation}
+In this tested implementation splits the system into a \red{online} an \red{offline} part. During the online part the required samples are gathered in the physical space. These samples are then transferred to a computer, where the offline calculations take place.
+
+The smartphone is only used to gather the data sets. All the calculations are then done on a computer using Matlab, libSVM and a custom java tool for the trilateration. In the training phase the data-sets are collected and the models are trained. The ranging and weighting models are then imported into the trilateration tool.
+
+For localization or testing the testing data is first given to the libSVM predict function together with the room recognition model to predict the room number. Next the testing data and room predictions are handed to the trilateration tool. It applies both the ranging and weighting models and then solves the trilateration problem with a Levenberg-Marquardt optimizer. Finally it calculates the accuracy and prints everything to a file.
+
+Below the process for the data collection and model generation is covered in mode detail:
+
+\subsubsection{Data sets}
+All samples contained RSSI and magnetic field data and were labeled with the room numbers. Four different data-sets were gathered:
+\begin{itemize}
+\item Low density grid (42 Samples)
+
+A set of evenly distributed samples gathered in a grid pattern with approximately 1m distance between them.
+
+\item High density grid (186 Samples)
+
+The same as the above but here the distance between the samples is 0.5m.
+\item Borders (67 Samples)
+
+This set only contains samples from the borders, meaning walls and doors between rooms. The samples were taken at a very high density; about every 20 to 30 cm along the borders.
+\item Center (23 Samples)
+
+This set only contains four or five samples per room. They are taken in the center of the room, far away from the borders and with a large distance between them; 1.5m to 2.5m depending on the size of the room.
+\end{itemize}
+
+
+\subsection{IAM-Building}
+This test bed was located on the third floor of the IAM-Building. It consisted of eight rooms, seven individual rooms and a wide corridor that connects them. The area of interest is approximately 250m\textsuperscript{2}.
+
+The ANs, five commercial WiFi access points (Model: D-Link D-635/D-2553), a were positioned to provide maximum coverage inside the area. The beacon period is set to 100ms.
+
+\note{insert map here}
+
+\red{The origin of the coordinate system is on the outer bottom left corner of room number one.}
+
+\subsubsection{Data sets}
+For this test bed the following data-sets were collected:
+\begin{itemize}
+\item Fingerprinting Map
+
+This data-set was collected with the procedure outlined in section \ref{overviewRoomRecognition}. In total there are \red{500} samples labeled with a room number. Of those \red{450} are on the borders and the rest in the center of the rooms. 
+\item Room recognition testing data
+
+A set of evenly distributed samples only labeled with the room number collected in a grid pattern with approximately 1.5m distance between them. Intended to be used to evaluate the performance of the room recognition.
+
+\item Ranging data
+
+Set of \red{40} evenly distributed samples labeled with \(x,y\)-coordinates. 
+\end{itemize}
+
+
+
+
+
+
+
+

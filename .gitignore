@@ -1,9 +1,4 @@
-Appendices/AppendixA.aux
-Chapters/Chapter1.aux
-Chapters/Chapter2.aux
-Chapters/Chapter3.aux
-Chapters/Chapter4.aux
-Chapters/Chapter5.aux
+*.aux
 main-blx.bib
 main.aux
 main.lof
