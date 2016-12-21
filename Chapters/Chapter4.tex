@@ -1,15 +1,15 @@
-\chapter{Localization system implementation}
+\chapter{Localization System Implementation}
 
 \label{Chapter4}
 
 In order to develop and evaluate the system outlined in Chapter \ref{Chapter3}, it is first required to establish a testing environment.
-This chapter introduces the \red{technical} implementation of the localization system in a test bed.
+This chapter introduces the implementation of the localization system in a test bed.
 
 \section{System Overview}
 
-The test bed consists of multiple AN, a MN and a computer.
+The test bed consists of multiple anchor nodes, a mobile node and a computer.
 
-The ANs are commercial WiFi access pints, which are placed in the \red{area of interest} and constantly broadcast a beacon signal.
+The ANs are commercial WiFi access pints, which are placed in the area of interest and constantly broadcast a beacon signal.
 
 The MN, an android smartphone, is used to collect samples form different location in the area of interest. 
 
@@ -20,16 +20,16 @@ The collected samples are transferred to the computer where the calculations and
 \includegraphics[width=\textwidth]{Figures/SystemImplementationOverview}
 \decoRule
 \caption[localization system overview]{Diagram of the test bed implementation}
-\label{fig:existingApproach}
+\label{fig:localizationSystemOverview}
 \end{figure}
 
-This test bed implementation splits the system into an online \red{(collecting samples)} and offline \red{(calculations on the computer)} part. This allows easily try out and empirically compare different configurations of the localisation system under the exact same conditions.
+This test bed implementation splits the system into an online (collecting samples) and offline (calculations on the computer) part. This allows to try out and empirically compare different configurations of the localisation system under the exact same conditions.
 
-The set-up of this test bed comprises both hardware and software specific configurations for each component. The remainder of this section details these configurations.
+The set-up of this test bed comprises both hardware and software specific configurations for each component. The remainder of this chapter details these configurations.
 
 \section{Hardware Set-up}
 
-This set-up requires three different kinds of machines. One for the AN, another for the MN and a computer. \red{There are no special requirements for the computer it only has to be able to execute Java code.}
+This set-up requires three different kinds of machines. One for the AN, another for the MN and a computer. There are no special requirements for the computer as long as it is able to execute Java code.
 
 For the AN and MN the following hardware was employed:
 
@@ -48,7 +48,7 @@ The mobile node is an android smartphone of the model \emph{One Plus One}. It ha
 \item \textbf{Memory:} 3 GB RAM
 \end{itemize}
 
-The WiFi module and the magnetometer are used to collect the samples.
+The WiFi module and the magnetometer are used for the sample collection.
 
 
 \section{Software Set-up}
@@ -68,23 +68,38 @@ On android the WiFi module can not be accessed directly. Wi-Fi scans have to be 
 
 To collect one sample the application takes the average of five RSSI and magnetometer measurements, each spaced 2 seconds apart. The samples are then saved to a \code{.csv} file on the smartphones internal storage and later transferred to the computer.
 
-\subsection{Offline set-up}
+\subsection{Training and testing of the system}
 
-Training, testing and evaluation of the localization system is done offline on a computer using a collection of different tools. For this purpose the collected samples are grouped into training and testing datasets. First the models for ranging, room recognition and weighting are created. These are then imported into a Java program which read
+Training, testing and evaluation of the localization system is done offline on a computer using Matlab, WEKA and a custom Java program for the trilateration.
 
-\subsubsection*{Room Recognition}
-\red{The SVM is trained with an automated script provided by the libSVM library. It generates a multiclass SVM model from the fingerprinting map using cross validation to determine the best value for C and gamma}.
-\note{change to WEKA}
+First the collected samples are grouped into training and testing datasets and the ranging, room recognition and weighting models are generated from the training data.
 
-\subsubsection*{Ranging}
-For the ranging model the \(\alpha, \beta\) parameters from equation \ref{eqn:non-linear path loss model} need to be determined for each AN. So in a spreadsheet the distance between the AN and the samples is calculated from the ranging data. This results in a list of distances and corresponding RSSI values. Matlabs function fit tool is then used to find the \(\alpha, \beta\)-values that best fit this data.
-\note{Insert example image here}
+Then the trilateration-tool reads the testing data, applies the models and solves the trilateration problem. It prints out the predicted position and the positioning error for each sample in the testing set.
 
-As apparent in the example above, this non-linear path loss model is inaccurate with high RSSI values. To account for that the distances for these high values are set by hand.
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\textwidth]{Figures/Offline_Set-Up}
+\decoRule
+\caption[Offline implementation]{Diagram of the offline implementation}
+\label{fig:offlineImplementation}
+\end{figure}
 
-\subsubsection*{Weighting}
+\subsubsection*{Room Recognition Model}
+The SVM for the room recognition is trained in WEKA. It generates a multiclass SVM model from the training data set using grid search for the parameter selection. The training data set consists of samples containing RSSI \((RSSI_{i})\) and magnetic fiald \((B_{xyz})\) values labelled with the room number \((R\#)\).
 
-The room weights are determined by hand in a spreadsheet based on the formal definition given in section \ref{WeightingModelDefinition}
-\note{talk about implementation of dinamic factor in java}
+\subsubsection*{Ranging Model}
+For the ranging model the \(\alpha, \beta\) parameters from equation \ref{eqn:non-linear path loss model} need to be determined for each AN. This is done by fitting the equation to the testing data in \emph{Matlab}. The testing data set is a list of RSSI values and the corresponding distance \((D_{i})\) to the AN.
 
-\subsection{Testing the Models}
+The resulting non-linear path loss model is inaccurate with high RSSI values (samples verry close to the AN). To account for that the distances for these high values are set by hand.
+
+\subsubsection*{Weighting Model}
+
+the weighting model is a function that determines the weights \((w_{i})\) based on the predicted distances to the AN \((d_{i})\) and the predicted room number \((r\#)\).
+
+The weighting model is determined by hand in a spreadsheet program. 
+
+\subsubsection*{Testing}
+
+The testing dataset contains samples with RSSI and magnetic field values and the position \((X,Y)\) where the sample was collected.
+
+In a first step WEKA is used to predict the room number. The result is handed to the trilateration tool, which applies the ranging and weighting models to determine the predicted distances \((d_{i})\) and clculate the weights \((w_{i})\). It then solves the trilateration problem (equation \ref{eqn: trilateration as optimization problem}) using the Levenberg–Marquardt optimizer from the \code{Apache Commons Math} library. It outputs the predicted position \((x,y)\) and the localization error to a \code{.csv} file.
