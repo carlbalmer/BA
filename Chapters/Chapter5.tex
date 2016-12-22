@@ -149,22 +149,15 @@ Grid (223)&84.1\%&10&1&84.1\%&100&0.01\\
 Borders (373)&88.6\%&100&1&86.4\%&1000&0.01\\
 \bottomrule
 \end{tabular}
-\caption[Room Recognition - polynomial kernel parameter selection]{Accuracy of the room recognition with different training data sets using the optimal parameters}
+\caption[Room Recognition - optimized parameters]{Accuracy of the room recognition with different training data sets using the optimal parameters}
 \label{tab:SVMconfigurationPoly}
 \end{table}
-
-
 
 \paragraph{To summarize:} Room recognition based on RSSI and magnetic field data is able to achieve a high accuracy, even with very small set of training data. The inclusion of magnetic field data \emph{generally improves the room recognition accuracy by 10\%}. But this improvement may be influenced by large temporary disruptions in the magnetic field.
 
 The results indicate that there is no benefit of having a training data set with more samples at the borders. The best results, in comparison to the numbers of samples, are achieved with a \emph{evenly distributed set of samples}. 
  
 The polynomial kernel seems to be the better suited kernel function.
-
-
-
-
-
 
 \section{Weighting}
 \label{EvaluationWeighting}
@@ -179,44 +172,10 @@ In a second step the weighting method is applied in a real word scenario using a
 
 Finally the performance of the proposed weighting method under real world conditions is compared to the \emph{Distance Weights} to see how it holds up against other simpler weighting methods.
 
-The \emph{ranging model} and \emph{room weights} are trained with the entire \emph{XY} data set and imported into the trilateration tool. For evaluation the same data-set is used.\red{ The \emph{Distance Weights} are calculated during run time and combined with the \emph{Room Weights}.}
+The \emph{ranging model} and \emph{room weights} are trained with the entire \emph{XY} data set and imported into the trilateration tool. For evaluation the same data-set is used.
 
 \subsection{Results}
-The results are presented as the cumulative distribution function of the localization error. This allows for a more accurate representation of the performance than just using statistical values like the mean and standard deviation.
-
-The performance if the weighting methods is compared to \emph{Distance Weights} (equation \note{reference}) and \emph{ordinary least squares} (no weights).
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=\textwidth]{Figures/WeightingCDF_RW}
-\decoRule
-\caption[Weighting method comparison]{CDF of the Localization error for the different weighting methods.}
-\label{fig:WeightingResultsCDF}
-\end{figure}
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=\textwidth]{Figures/WeightingCDF_RDW}
-\decoRule
-\caption[Weighting method comparison]{CDF of the Localization error for the different weighting methods.}
-\label{fig:WeightingResultsCDF}
-\end{figure}
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=\textwidth]{Figures/WeightingCDF_realRW}
-\decoRule
-\caption[Weighting method comparison]{CDF of the Localization error for the different weighting methods.}
-\label{fig:WeightingResultsCDF}
-\end{figure}
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=\textwidth]{Figures/WeightingCDF_realDistance}
-\decoRule
-\caption[Weighting method comparison]{CDF of the Localization error for the different weighting methods.}
-\label{fig:WeightingResultsCDF}
-\end{figure}
+In addition to the mean, standard deviation and maximum error, the results are presented as the cumulative distribution function of the localization error. This allows for a more accurate representation of the performance than just using statistical values.
 
 \begin{table}[h]
 \centering
@@ -232,18 +191,54 @@ Room+Distance Weights (84.1\%)&2.40m&1.25m&5.69m&12.4\%\\
 Distance Weights&2.42m&1.19m&5.37m&11.3\%\\
 \bottomrule
 \end{tabular}
-\caption[Weighting method comparison]{Comparison of the statistical data for the different weighting methods}
+\caption[Weighting method comparison]{Comparison of the statistical values for the different weighting methods}
 \label{tab:WeightingStatisticalValues}
 \end{table}
 
-The results in figure \ref{fig:WeightingResultsCDF} and table \ref{tab:WeightingStatisticalValues} show a clear improvement of the \emph{Room Weights} over \emph{OLS}. The mean error is $\approx$0.4m lower, the standard deviation smaller and the maximum error was reduced by $\approx$3.4m. The difference is also clearly visible in the CDF plot.
+The results with 100\% room recognition show a improvement of the \emph{Room Weights} over \emph{OLS}. The mean error is 14.2\% ($\approx$0.4m) lower, the standard deviation smaller and the maximum error was reduced by $\approx$3.4m. But when looking at the CDF plot (figure: \ref{fig:WeightingCDFRoom}) the improvement, although visible, does not seem very dramatic and is mainly due to the large reduction in the maximum error, which was improved by $\approx$0.5m.
 
-But when compared to the \emph{Distance Weights} the improvements are much smaller. The mean error is only a few centimetres lower (0.07m) and at 70\% the \emph{Room Weights} are even a bit worse than the \emph{Distance Weights}. Here the largest improvement of the \emph{Room Weights} over the \emph{Distance Weights} is the maximum error, which was improved by $\approx$0.5m.
+The results also show that combining the \emph{Room} and \emph{Distance Weights} does indeed yield a further small improvement. While the mean error is only marginally increased, it lowers the maximum error even further and smooths out the CDF curve (figure: \ref{fig:WeightingCDFRoomDistance}).
 
-The results also show that Combining the \emph{Room} and \emph{Distance Weights} does indeed yield an improvement. While the mean error is only marginally increased, it lowers the maximum error even further and smooths out the CDF curve.
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{Figures/WeightingCDF_RW}
+\decoRule
+\caption[Weighting method comparison]{CDF of the Localization error with the \emph{Room Weights}.}
+\label{fig:WeightingCDFRoom}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{Figures/WeightingCDF_RDW}
+\decoRule
+\caption[Weighting method comparison]{CDF of the Localization error with the \emph{combined room and distance weights}.}
+\label{fig:WeightingCDFRoomDistance}
+\end{figure}
+
+The comparison between the performance of the weighting in a best case scenario and real world case, shows that there is indeed a error introduced by the room recognition. But the CDF (figure: \ref{fig:WeightingCDFrealRoom}) shows that this is error is overall very small and mainly due to a few samples with a large error, that increase the maximum error.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{Figures/WeightingCDF_realRW}
+\decoRule
+\caption[Weighting method comparison]{CDF of the Localization error for the different weighting methods.}
+\label{fig:WeightingCDFrealRoom}
+\end{figure}
+
+However when taking into account this error, the real world performance of the proposed weighting method is almost the same as the existing simpler \emph{Distance Weights}. This is apparent in figure \ref{fig:WeightingCDFrealDistance}. The mean error is only a few centimetres lower (0.07m) and the maximum error even higher than with the \emph{Distance Weights}.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{Figures/WeightingCDF_realDistance}
+\decoRule
+\caption[Weighting method comparison]{CDF of the Localization error for the different weighting methods.}
+\label{fig:WeightingCDFrealDistance}
+\end{figure}
 
 \paragraph{To summarize:} 
 
-The proposed weighting methods work, offer good improvements over \emph{OLS} and greatly reduce the maximum error. They do, however, not perform much better than \emph{Distance Weights}.
+The proposed weighting method does work, and improve the accuracy compared to \emph{OLS}. However the improvements are not very large. This can be explained by the fact that the NLR-model used for ranging already takes into account some environmental parameters.
+
+Compared to already existing simpler \emph{Distance Weight} the proposed method performs almost the same. Considering the added complexity and effort in collecting the room recognition samples the proposed weighting method is not practical. It does make more sense to use the \emph{Distance Weights} instead.
 
 
