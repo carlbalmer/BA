@@ -153,11 +153,7 @@ Borders (373)&88.6\%&100&1&86.4\%&1000&0.01\\
 \label{tab:SVMconfigurationPoly}
 \end{table}
 
-\paragraph{To summarize:} Room recognition based on RSSI and magnetic field data is able to achieve a high accuracy, even with very small set of training data. The inclusion of magnetic field data \emph{generally improves the room recognition accuracy by 10\%}. But this improvement may be influenced by large temporary disruptions in the magnetic field.
-
-The results indicate that there is no benefit of having a training data set with more samples at the borders. The best results, in comparison to the numbers of samples, are achieved with a \emph{evenly distributed set of samples}. 
- 
-The polynomial kernel seems to be the better suited kernel function.
+\newpage
 
 \section{Weighting}
 \label{EvaluationWeighting}
@@ -215,20 +211,17 @@ The results with 100\% room recognition show a improvement of the \emph{Room Wei
 
 The results also show that combining the \emph{Room} and \emph{Distance Weights} does indeed yield a further small improvement. While the mean error is only marginally increased, it lowers the maximum error even further and smooths out the CDF curve (figure: \ref{fig:WeightingCDFRoomDistance}).
 
+The comparison between the performance of the weighting in a best case scenario and real world case, shows that there is indeed a error introduced by the room recognition. But the CDF (figure: \ref{fig:WeightingCDFrealRoom}) shows that this is error is overall very small and mainly due to a few samples with a large error, that increase the maximum error.
 
+However when taking into account this error, the real world performance of the proposed weighting method is almost the same as the existing simpler \emph{Distance Weights}. This is apparent in figure \ref{fig:WeightingCDFrealDistance}. The mean error is only a few centimetres lower (0.07m) and the maximum error even higher than with the \emph{Distance Weights}.
 
-\begin{figure}[h]
+\begin{figure}[bh]
 \centering
 \includegraphics[width=\textwidth]{Figures/WeightingCDF_realRW}
 \decoRule
 \caption[Weighting method comparison]{Localization error with \emph{combined room and distance weights} in a best-case and real world scenario}
 \label{fig:WeightingCDFrealRoom}
 \end{figure}
-
-
-The comparison between the performance of the weighting in a best case scenario and real world case, shows that there is indeed a error introduced by the room recognition. But the CDF (figure: \ref{fig:WeightingCDFrealRoom}) shows that this is error is overall very small and mainly due to a few samples with a large error, that increase the maximum error.
-
-However when taking into account this error, the real world performance of the proposed weighting method is almost the same as the existing simpler \emph{Distance Weights}. This is apparent in figure \ref{fig:WeightingCDFrealDistance}. The mean error is only a few centimetres lower (0.07m) and the maximum error even higher than with the \emph{Distance Weights}.
 
 \begin{figure}
 \centering
@@ -237,12 +230,3 @@ However when taking into account this error, the real world performance of the p
 \caption[Weighting method comparison]{Localization error for the \emph{combined room and distance weights} and \emph{Distance Weights}}
 \label{fig:WeightingCDFrealDistance}
 \end{figure}
-
-
-\paragraph{To summarize:} 
-
-The proposed weighting method does work, and improve the accuracy compared to \emph{OLS}. However the improvements are not very large. This can be explained by the fact that the NLR-model used for ranging already takes into account some environmental parameters.
-
-Compared to already existing simpler \emph{Distance Weight} the proposed method performs almost the same. Considering the added complexity and effort in collecting the room recognition samples the proposed weighting method is not practical. It does make more sense to use the \emph{Distance Weights} instead.
-
-

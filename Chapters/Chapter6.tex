@@ -2,19 +2,39 @@
 
 \label{Chapter6}
 
-\section{Summary and Conclusion}
+\section{Summary}
 
 
 Indoor localization remains a challenging problem in computer science.
 
-In this thesis I propose and develop a room recognition system based on WiFi signals and the magnetic field. I suggest to add this system to a the existing localization approach and use the information it provides to determine better weights for the trilateration and therefore improve the localization.
+In this thesis I combine the two most common localization approaches into one system; Adding a room recognition system to a range based approach to improve the trilateration weights.
 
-I carry out two experiments to optimize the room recognition and to determine the best performing weighting model.
+I propose a room recognition system based on fingerprinting with RSSI and magnetic field data and a new weighting method for range based localization by defining a set of weights for each room.
 
-Finally I implement my new approach in a large test bed and evaluate its performance.
+The proposed system was then implemented in a test bed on a floor of the university building. Several experiment were carried out to evaluate the performance of the room recognition and weighting method.
 
-Concerning the room recognition I conclude that it is...
+\section{Conclusion}
+
+\paragraph{Concerning the Room Recognition:}
+Room recognition based on RSSI and magnetic field data is able to achieve a high accuracy, even with very small set of training data. The system is able to achieve \emph{80-90\% accuracy} depending on the size of the training data set.
+
+The inclusion of magnetic field data \emph{generally improves the room recognition accuracy by 10\%}. However this improvement may be influenced by large temporary disruptions in the magnetic field.
+
+The results indicate that there is no benefit of having a training data set with more samples at the borders. The best results, in comparison to the numbers of samples, are achieved with a \emph{evenly distributed set of samples}. 
+ 
+For the SVM configuration the polynomial kernel seems to be the better suited kernel function.
+
+
+\paragraph{Concerning the weighting:} 
+
+The proposed weighting method does work, and improve the accuracy compared to \emph{OLS}. However the improvements are not very large. This can be explained by the fact that the NLR-model used for ranging already takes into account some environmental parameters.
+
+Compared to already existing simpler \emph{Distance Weight} the proposed method performs almost the same. Considering the added complexity and effort in collecting the room recognition samples the proposed weighting method is not practical. It does make more sense to use the \emph{Distance Weights} instead.
+
+
+
 \subsection{Possible future work}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam ultricies lacinia euismod. Nam tempus risus in dolor rhoncus in interdum enim tincidunt. Donec vel nunc neque. In condimentum ullamcorper quam non consequat. Fusce sagittis tempor feugiat. Fusce magna erat, molestie eu convallis ut, tempus sed arcu. Quisque molestie, ante a tincidunt ullamcorper, sapien enim dignissim lacus, in semper nibh erat lobortis purus. Integer dapibus ligula ac risus convallis pellentesque.
+Although the room recognition was not able to significantly improve the weighting, there are many possible applications for a simple and effective room recognition system. As an example it could be included into a particle filter to enhance tracking performance for indoor tracking applications.
 
+It would also be interesting to explore other ways to include magnetic filed data into indoor localization systems.
