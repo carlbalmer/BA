@@ -47,177 +47,189 @@ The collected samples were grouped into the following data sets:
 \section{Room Recognition}
 \label{EvaluationRoomRecognition}
 
-The purpose of this experiment is to check the hypothesis that the magnetic field data improves the room recognition accuracy and find out which kind of training data (evenly distributed or more samples at the borders) achieves the best results.
+The purpose of this evaluation is to check the hypothesis that the magnetic field data improves the room recognition accuracy and find out which kind of training data (evenly distributed or more samples at the borders) achieves the best results.
 
 \paragraph{To check if the magnetic field data has a significant impact on the performance of the room recognition} 10-fold cross validation is performed on the evenly distributed \emph{Grid} data set both with and without using magnetic field data. The resulting accuracies are then compared. This experiment is repeated with different SVM parameters to see if the parameters have an impact on the result. 
 
-\paragraph{To determine the best training data set} multiple models are generated using different training data, parameters and kernels and evaluated against the \emph{XY} data set.
+\paragraph{To determine the best training data set} multiple models are generated using the two training data sets (\emph{Grid}, \emph{Borders}) and different SVM parameters and kernels. The models are then tested against the evenly distributed \emph{XY} data set and the resulting accuracies are compared.
 
-The parameters are either the standard pre-sets or selected with cross validation and grid search. The training data used are the \emph{Grid}, \emph{Center} and \emph{Borders} data sets and a combination of the \emph{Borders} and \emph{Center} data set.
+The SVM parameters are either the standard pre-sets or selected with cross validation and grid search.
 
 \subsection{Results}
 
-Table \ref{tab:RoomRecognitionMagneticField} shows a large difference between the performance with and without magnetic field data. On average the accuracy was 26.8\% higher with the magnetic field data. For the paired students T-Test this results in a $t_{obs}$ of 13.0.The theoretical limit with a student's distribution and 9 degrees of freedom with a confidence level of 5\% is 2.262. The difference between the two sets of samples is therefore statistically significant.
+Table \ref{tab:RoomRecognitionMagneticField} shows a large difference between the performance with and without magnetic field data when using cross validation. With WEKA's pre-set SVM parameters (poly-kernel, $c=1,e=1$) the improvement is very large with almost 20\%. When using the optimal parameters (determined by grid search for each case separately) the difference drops to a still significant 10\%. This drop is due to the fact that the pre-set parameters seem to be better suited to the case with magnetic field data and a comparison between the two cases using not optimal parameters is therefore unfair.
 
-\begin{table}
-\centering
-\begin{tabular}{l l l}
-\toprule
-\textbf{Sample}&\boldmath$RSSI_{i},B_{xyz}$&\boldmath$RSSI_{i}$ \\
-\midrule
-1&90\%&52.9\% \\
-2&90.2\%&70.5\% \\
-3&88.5\%&62.3\% \\
-4&88.3\%&67.5\% \\
-5&91.2\%&52.9\% \\
-6&84.8\%&61.0\% \\
-7&89.6\%&61.2\% \\
-8&96.8\%&76.7\% \\
-9&94.4\%&68.5\% \\
-10&85.3\%&57.4\% \\
-\textbf{Mean}&\textbf{89.9}&\textbf{63.1} \\
-\bottomrule
-\end{tabular}
-\caption[Room Recognition - Magnetic Field]{Accuracy of the room recognition with and without magnetic field data.}
-\label{tab:RoomRecognitionMagneticField}
-\end{table}
+Cross validation can sometimes be a little biased. So the impact of magnetic field data was also compared by training with the \emph{Grid} data set and testing against the \emph{XY} data set, mincing a real use case of the room recognition. Surprisingly this only resulted in a 2.3\% improvement.
+
+
 
 \begin{table}
 \centering
 \begin{tabular}{l l l l}
 \toprule
-\textbf{Sample}&\boldmath$RSSI_{i},B_{xyz}$&\boldmath$RSSI_{i}$&\textbf{Difference} \\
+\textbf{Evaluation Type}&\textbf{with }\boldmath$B_{xyz}$&\textbf{without }\boldmath$B_{xyz}$&\textbf{Difference} \\
 \midrule
 CV (pre-set)&90.1\%&70.4\%&19.7\%\\
 CV (optimized)&93.3\%&83.0\%&10.3\%\\
-XY test set&84.1\%&81.8\%&2.3\%\\
-XY test set&97.3\%&86.8\%&10.5\%\\
+Train: \emph{Grid}, Test: \emph{XY}&84.1\%&81.8\%&2.3\%\\
+Train: \emph{Grid}, Test: \emph{XY}&97.3\%&86.8\%&10.5\%\\
 \textit{(without room \#3)}&&\\
 \bottomrule
 \end{tabular}
-\caption[Room Recognition - Magnetic Field]{Accuracy of the room recognition with and without magnetic field data.}
+\caption[Room Recognition - Magnetic Field improvements]{Accuracy of the room recognition with and without magnetic field data.}
 \label{tab:RoomRecognitionMagneticField}
 \end{table}
 
-\begin{figure}[ht]
+The reason for this unexpected result can be found by comparing the impact of the magnetic field data on the  room recognition accuracy in each room. We see in table \ref{tab:RoomRecognitionPerRoom} that the accuracy is improved in every room that was not already 100\%. Wit the exception of room \#3 where the accuracy drops to 0\%. 
 
-\label{fig:FloorPlanRoomError}
+At the time the data sets were collected room \#3 was almost empty while the two adjacent rooms contained server racks and technical equipment (near the walls separating the rooms). I expect that some of this equipment caused a disruption of the magnetic field during the time that the \emph{XY} data set was created. And therefore obscured the already weak magnetic signature of room \#3. A similar effect was observed in related work \citep{Li2012feasableMagnetic}.
+
+When room \#3 is excluded from the test set we get the expected 10\% improvement when using magnetic field data.
+
+\begin{table}
 \centering
-\includegraphics[width=.8\textwidth]{Figures/FloorPlan_Room_error_WO_MF}
-\includegraphics[width=.8\textwidth]{Figures/FloorPlan_Room_error_WithMF}
-\decoRule
-\caption[SVM kernel trick]{\raggedright(Left) A dataset in, not linearly separable. (Middle)The same dataset transformed with decision boundary. (Right) The nonlinear decision boundary.}
+\begin{tabular}{l l l l}
+\toprule
+\textbf{Room Number}&\textbf{with }\boldmath$B_{xyz}$&\textbf{without }\boldmath$B_{xyz}$&\textbf{Difference} \\
+\midrule
+\#1&100.00\%&100.00\%&-\\
+\#2&100.00\%&100.00\%&-\\
+\#3&0.00\%&50.00\%&-50.00\%\\
+\#4&100.00\%&83.30\%&16.70\%\\
+\#5&100.00\%&80.00\%&20.00\%\\
+\#6&100.00\%&75.00\%&25.00\%\\
+\#7&100.00\%&100.00\%&-\\
+\#8&83.30\%&66.70\%&16.60\%\\
+\bottomrule
+\end{tabular}
+\caption[Room Recognition - Accuracy per room]{Accuracy of the room recognition for each room (\emph{XY} test set)}
+\label{tab:RoomRecognitionPerRoom}
+\end{table}
 
-\end{figure}
 
-Table \ref{tab:SVMconfigurationPresets} shows the accuracy for the different training data sets and two different kernel functions (pre-set parameters). The polynomial kernel performs very well while with the RBF kernel the accuracy is below 20\% for all training data sets. The RBF kernel, with these parameters, does not seem to be a good fit for this kind of data.
 
-With the polynomial kernel the best performing data set is \emph{Borders+Center}, but it is only 2.3\% better than \emph{Grid}, which has 40\% fewer samples. This difference does not seem significant and is most likely due to the higher numbers of samples. \emph{Borders} has a pretty low accuracy in proportion to its numbers of samples. The accuracy of \emph{Center} is the lowest but still quite good considering it only has 66 samples. These results indicate that there is no benefit of having more samples at the borders.
+Table \ref{tab:SVMconfigurationPresets} shows the accuracy for the two training data sets and two different kernel functions using WEKA's pre-set parameters. The polynomial kernel performs very well while with the RBF kernel the accuracy is below 20\% for all training data sets. The RBF kernel, with these parameters, does not seem to be a good fit for this kind of data.
 
-Also the inclusion of magnetic field data improves the accuracy for all training sets except for the \emph{Borders+Center} data set. This is probably due to the parameters not being optimal (see Table \ref{tab:SVMconfigurationPoly}).
+With the polynomial kernel the unequally distributed \emph{Borders} data performs better. But it is only 2.3\% better than \emph{Grid}, which has 40\% fewer samples. This difference does not seem significant and is most likely due to the higher numbers of samples.
+
+Table \ref{tab:SVMconfigurationPoly} shows the accuracy with optimal parameters for each training set and kernel. The parameters were selected with a grid search.
+
+For the training data sets the accuracy could be slightly increased by the parameter selection, but the relative accuracy is still the same; \emph{Borders} has the highest performance with \emph{Grid} only being marginally worse.
+
+With the optimized parameters both kernels have a similar performance, although the RBF kernels $c$ values are generally higher. A high $c$ value means that the RBF kernel's decision surface needs to be more complex to achieve the same accuracy as the polynomial kernel. It is therefore not as good at separating the samples. 
+
+Finally to see if it was possible to train a room recognition system with a minimal number of samples the system was trained with the \emph{XY} data set and tested against the \emph{Grid}. This resulted in a accuracy of 81.2\%. This is still very high considering only 44 training samples were used.
+
+
 
 \begin{table}
 
 \centering
-\begin{tabular}{l l l l l}
+\begin{tabular}{l l l}
 \toprule
-\textbf{Training Data}&\multicolumn{2}{c}{\textbf{Polynomial}}&\multicolumn{2}{c}{\textbf{RBF}}\\
-\textbf{(\#Samples)}&\multicolumn{2}{c}{$c=1,e=1$}&\multicolumn{2}{c}{$c=1,g=0.01$}\\
-&$RSSI_{i},B_{xyz}$&$RSSI_{i}$&$RSSI_{i},B_{xyz}$&$RSSI_{i}$\\
+\textbf{Training Data}&\textbf{Polynomial}&\textbf{RBF}\\
+\textbf{(\#Samples)}&$c=1,e=1$&$c=1,g=0.01$\\
 \midrule
-Grid (223)&81.8\%&75\%&18.2\%&18.2\%\\
-Center (66)&72.7\%&61.4&18.2\%&18.2\%\\
-Borders (307)&77.3\%&65.9\%&13.7\%&13.7\%\\
-Borders+Center (373)&84.1\%&84.1\%&11.4\%&11.4\%\\
+Grid (223)&81.8\%&18.2\%\\
+Borders (373)&84.1\%&11.4\%\\
 \bottomrule
 \end{tabular}
-\caption[Room recognition - SVM pre-sets]{Accuracy of the room recognition with polynomial and RBF kernel pre-sets}
+\caption[Room recognition - SVM pre-sets]{Accuracy of the room recognition with different training data sets using the polynomial and RBF kernel pre-sets}
 \label{tab:SVMconfigurationPresets}
 \end{table}
 
-Tables \ref{tab:SVMconfigurationRBF} and \ref{tab:SVMconfigurationPoly} show the accuracy with  optimal parameters for the polynomial and RBF kernel. For each training data set (with and without magnetic field data) and kernel function the optimal parameters were selected using grid search.
-
-With the optimized parameters both kernels have a similar performance, although the RBF kernels $c$ values are generally higher. A high $c$ value means that the RBF kernel's decision surface needs to be more complex to achieve the same accuracy as the polynomial kernel. It is therefore not as good at separating the samples and polynomial kernel seems to be the better suited kernel function. 
-
-For the training data sets the accuracy could be slightly increased by the parameter selection, but the distribution is still the same; The \emph{Borders+Center} has the highest performance with \emph{Grid} only being marginally worse, especially when reducing the number of samples in \emph{Borders+Grid} (see table \ref{tab:SVMconfigurationPoly}).
-
-The magnetic field values again cause a improvement, although smaller than with the pre-sets.
-
-\paragraph{To conclude the results of this experiment:} The inclusion of magnetic field data generally improves the room recognition accuracy. Although size of the improvement is dependent on the training data and the SVM's parameters.
-
-The best performing training dataset, in comparison to the numbers of samples, is a \emph{evenly distributed Grid of samples}. 
-
-The best suited kernel function is the polynomial kernel.
-
-
-
 \begin{table}
 \centering
 \begin{tabular}{l l l l l l l}
 \toprule
-\textbf{Training Data}&\multicolumn{3}{c}{\boldmath$RSSI_{i},B_{xyz}$}&\multicolumn{3}{c}{\boldmath$RSSI_{i}$}\\
-\textbf{(\#Samples)}&\textbf{accy}&$c$&$e$&\textbf{accy}&$c$&$e$\\
+\textbf{Training Data}&\multicolumn{3}{c}{\textbf{Polynomial}}&\multicolumn{3}{c}{\textbf{RBF}}\\
+\textbf{(\#Samples)}&\textbf{accy}&$c$&$e$&\textbf{accy}&$c$&$g$\\
 \midrule
-Grid (223)&84.1\%&10&1&81.8\%&10&1\\
-Center (66)&72.7\%&1&1&72.3\%&10&1\\
-Borders (307)&84.1\%&10&1&77.3\%&10&1\\
-Borders+Center (373)&88.6\%&100&1&86.4\%&10&1\\
-Border+Center (223)&85.7\%&10&1&84.1\%&10&1\\
-\multicolumn{7}{l}{\textit{40\% randomly removed, average of 10 evaluations}}\\
+Grid (223)&84.1\%&10&1&84.1\%&100&0.01\\
+Borders (373)&88.6\%&100&1&86.4\%&1000&0.01\\
 \bottomrule
 \end{tabular}
-\caption[Room Recognition - polynomial kernel parameter selection]{Results of the parameter selection for the polynomial kernel}
+\caption[Room Recognition - polynomial kernel parameter selection]{Accuracy of the room recognition with different training data sets using the optimal parameters}
 \label{tab:SVMconfigurationPoly}
 \end{table}
 
-\begin{table}
-\centering
-\begin{tabular}{l l l l l l l}
-\toprule
-\textbf{Training Data}&\multicolumn{3}{c}{\boldmath$RSSI_{i},B_{xyz}$}&\multicolumn{3}{c}{\boldmath$RSSI_{i}$}\\
-\textbf{(\#Samples)}&\textbf{accy}&$c$&$g$&\textbf{accy}&$c$&$g$\\
-\midrule
-Grid (223)&84.1\%&100&0.01&81.8\%&1000&0.01\\
-Center (66)&70.5\%&100&0.01&72.7\%&1000&0.01\\
-Borders (307)&84.1\%&100&0.1&77.3\%&1000&0.01\\
-Borders+Center (373)&86.4\%&1000&0.01&86.4\%&100&0.1\\
-\bottomrule
-\end{tabular}
-\caption[Room Recognition - RBF kernel parameter selection]{Results of the parameter selection for the RBF kernel}
-\label{tab:SVMconfigurationRBF}
-\end{table}
+
+
+\paragraph{To summarize:} Room recognition based on RSSI and magnetic field data is able to achieve a high accuracy, even with very small set of training data. The inclusion of magnetic field data \emph{generally improves the room recognition accuracy by 10\%}. But this improvement may be influenced by large temporary disruptions in the magnetic field.
+
+The results indicate that there is no benefit of having a training data set with more samples at the borders. The best results, in comparison to the numbers of samples, are achieved with a \emph{evenly distributed set of samples}. 
+ 
+The polynomial kernel seems to be the better suited kernel function.
+
+
+
+
+
 
 \section{Weighting}
 \label{EvaluationWeighting}
 
-In Chapter \ref{WeightingModelDefinition} two weighting methods were proposed; the \emph{Room Weights} (equation \note{reference}) and the \emph{Room+Distance Weights} (equation \note{redrence}). The goal of this experiment is to evaluate if the \emph{Room Weights} improve the accuracy of the trilateration and if this is true whether the acuracy can be further improved with the \emph{Room+Distance Weights}.
+Section \ref{EvaluationRoomRecognition} has shown that the proposed room recognition can achieve high accuracy even with a small training data set. Potentially it could be trained with the same points used to train the ranging model, eliminating the need to collect additional samples. It is now possible to evaluate the proposed weighting method and see if the information from the room recognition can be used to improve the range based localization accuracy.
 
-During the training phase the \emph{ranging model} and the \emph{room weights} are trained with the entire \emph{XY} data set and imported into the trilateration tool. For evaluation the same data-set is used with the assumption of 100\% room recognition accuracy. The \emph{Distance Weights} are calculated during run time and combined with the \emph{Room Weights}.
+In Chapter \ref{WeightingModelDefinition} a new weighting method was proposed; the \emph{Room Weights} (equation \note{reference}). The goal of this evaluation is to evaluate if the \emph{Room Weights} improve the accuracy of the trilateration and if this is true whether the accuracy can be further improved by combining the \emph{Room Weights} with the existing method of the \emph{Distance Weights}.
+
+In a first step the new weighing method is applied with the assumption of 100\% room recognition and compared to \emph{ordinary least squares} (trilateration with no weights). This gives us a best case value for the improvements with the new weighting method.
+
+In a second step the weighting method is applied in a real word scenario using a room recognition system trained with the the \emph{Grid} data set and a accuracy of 84\%. The results are compared to the 100\% case to see how sensitive the weighing method is to errors in the room recognition.
+
+Finally the performance of the proposed weighting method under real world conditions is compared to the \emph{Distance Weights} to see how it holds up against other simpler weighting methods.
+
+The \emph{ranging model} and \emph{room weights} are trained with the entire \emph{XY} data set and imported into the trilateration tool. For evaluation the same data-set is used.\red{ The \emph{Distance Weights} are calculated during run time and combined with the \emph{Room Weights}.}
 
 \subsection{Results}
 The results are presented as the cumulative distribution function of the localization error. This allows for a more accurate representation of the performance than just using statistical values like the mean and standard deviation.
 
 The performance if the weighting methods is compared to \emph{Distance Weights} (equation \note{reference}) and \emph{ordinary least squares} (no weights).
 
-\begin{figure}[htp]
+\begin{figure}[h]
 \centering
-\includegraphics[width=\textwidth]{Figures/WeightingResultsCDF}
+\includegraphics[width=\textwidth]{Figures/WeightingCDF_RW}
 \decoRule
 \caption[Weighting method comparison]{CDF of the Localization error for the different weighting methods.}
 \label{fig:WeightingResultsCDF}
 \end{figure}
 
-\begin{table}
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{Figures/WeightingCDF_RDW}
+\decoRule
+\caption[Weighting method comparison]{CDF of the Localization error for the different weighting methods.}
+\label{fig:WeightingResultsCDF}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{Figures/WeightingCDF_realRW}
+\decoRule
+\caption[Weighting method comparison]{CDF of the Localization error for the different weighting methods.}
+\label{fig:WeightingResultsCDF}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{Figures/WeightingCDF_realDistance}
+\decoRule
+\caption[Weighting method comparison]{CDF of the Localization error for the different weighting methods.}
+\label{fig:WeightingResultsCDF}
+\end{figure}
+
+\begin{table}[h]
 \centering
 \begin{tabular}{l l l l l}
 \toprule
-\textbf{Weighting Method}&\textbf{Mean}&\textbf{Standard}&\textbf{Maximum}&\textbf{Improvement}\\
-&&\textbf{Deviation}&\textbf{Error}&\textbf{over OLS}\\
+\textbf{Weighting Method}&\textbf{Mean}&\textbf{STD}&\textbf{Max}&\textbf{Improv}\\
+&&\textbf{}&\textbf{Error}&\textbf{over OLS}\\
 \midrule
 OLS&2.74m&1.57m&8.25m&\\
+Room Weights (100\%)&2.35m&1.22m&4.89m&14.2\%\\
+Room+Distance Weights (100\%)&2.29m&1.16m&4.65m&16.4\%\\
+Room+Distance Weights (84.1\%)&2.40m&1.25m&5.69m&12.4\%\\
 Distance Weights&2.42m&1.19m&5.37m&11.3\%\\
-Room Weights&2.35m&1.22m&4.89m&14.2\%\\
-Room+Distance Weights&2.29m&1.16m&4.65m&16.4\%\\
 \bottomrule
 \end{tabular}
 \caption[Weighting method comparison]{Comparison of the statistical data for the different weighting methods}
@@ -230,35 +242,8 @@ But when compared to the \emph{Distance Weights} the improvements are much small
 
 The results also show that Combining the \emph{Room} and \emph{Distance Weights} does indeed yield an improvement. While the mean error is only marginally increased, it lowers the maximum error even further and smooths out the CDF curve.
 
-\paragraph{To conclude:} 
+\paragraph{To summarize:} 
 
 The proposed weighting methods work, offer good improvements over \emph{OLS} and greatly reduce the maximum error. They do, however, not perform much better than \emph{Distance Weights}.
 
 
-\section{Final Evaluation}
-
-For the final evaluation the room recognition and weighting are combined to evaluate the overall performance of the system. The results of the weighting experiment (previous section  \ref{ExperimentWeighting}) represent the maximum achievable accuracy under optimal conditions (100\% room recognition accuracy).  The main question for this evaluation is how much impact the room recognition error has on the localization accuracy.
-
-The same training and testing set-up as in the weighting experiment was used.To see the impact of different room recognition accuracies on the weighting model, two room recognition models were used; one was trained with the \emph{Borders+Center} data set (88.6\% accuracy) and the other with the \emph{Grid} data set (84.1\%).
-
-\subsection{Results}
-
-The results are compared to the optimal case with 100\% room recognition accuracy and to the \emph{Distance Weights}.
-
-
-\begin{table}
-\centering
-\begin{tabular}{l l l l l}
-\toprule
-\textbf{Weighting Method}&\textbf{Mean}&\textbf{Standard}&\textbf{Maximum}\\
-&&\textbf{Deviation}&\textbf{Error}\\
-\midrule
-OLS&2.74m&1.57m&8.25m&\\
-Distance Weights&2.42m&1.19m&5.37m&11.3\%\\
-Room+Distance Weights (100\%)&2.29m&1.16m&4.65m&16.4\%\\
-Room+Distance Weights (84.1\%)&2.40m&1.25m&5.69m&12.4\%\\
-\bottomrule
-\end{tabular}
-\caption[Final evaluation statistical values]{Comparison of the statistical data for the final evaluation}
-\label{tab:FinalStatisticalValues}
-\end{table}
