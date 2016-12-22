@@ -177,7 +177,7 @@ The \emph{ranging model} and \emph{room weights} are trained with the entire \em
 \subsection{Results}
 In addition to the mean, standard deviation and maximum error, the results are presented as the cumulative distribution function of the localization error. This allows for a more accurate representation of the performance than just using statistical values.
 
-\begin{table}[h]
+\begin{table}[hb]
 \centering
 \begin{tabular}{l l l l l}
 \toprule
@@ -195,45 +195,49 @@ Distance Weights&2.42m&1.19m&5.37m&11.3\%\\
 \label{tab:WeightingStatisticalValues}
 \end{table}
 
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth]{Figures/WeightingCDF_RW}
+\decoRule
+\caption[Weighting method comparison]{The Localization error with the \emph{Room Weights}.}
+\label{fig:WeightingCDFRoom}
+\end{figure}
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth]{Figures/WeightingCDF_RDW}
+\decoRule
+\caption[Weighting method comparison]{The Localization error with the \emph{combined room and distance weights}.}
+\label{fig:WeightingCDFRoomDistance}
+\end{figure}
+
 The results with 100\% room recognition show a improvement of the \emph{Room Weights} over \emph{OLS}. The mean error is 14.2\% ($\approx$0.4m) lower, the standard deviation smaller and the maximum error was reduced by $\approx$3.4m. But when looking at the CDF plot (figure: \ref{fig:WeightingCDFRoom}) the improvement, although visible, does not seem very dramatic and is mainly due to the large reduction in the maximum error, which was improved by $\approx$0.5m.
 
 The results also show that combining the \emph{Room} and \emph{Distance Weights} does indeed yield a further small improvement. While the mean error is only marginally increased, it lowers the maximum error even further and smooths out the CDF curve (figure: \ref{fig:WeightingCDFRoomDistance}).
 
-\begin{figure}[h]
-\centering
-\includegraphics[width=\textwidth]{Figures/WeightingCDF_RW}
-\decoRule
-\caption[Weighting method comparison]{CDF of the Localization error with the \emph{Room Weights}.}
-\label{fig:WeightingCDFRoom}
-\end{figure}
 
-\begin{figure}[h]
-\centering
-\includegraphics[width=\textwidth]{Figures/WeightingCDF_RDW}
-\decoRule
-\caption[Weighting method comparison]{CDF of the Localization error with the \emph{combined room and distance weights}.}
-\label{fig:WeightingCDFRoomDistance}
-\end{figure}
-
-The comparison between the performance of the weighting in a best case scenario and real world case, shows that there is indeed a error introduced by the room recognition. But the CDF (figure: \ref{fig:WeightingCDFrealRoom}) shows that this is error is overall very small and mainly due to a few samples with a large error, that increase the maximum error.
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=\textwidth]{Figures/WeightingCDF_realRW}
 \decoRule
-\caption[Weighting method comparison]{CDF of the Localization error for the different weighting methods.}
+\caption[Weighting method comparison]{Localization error with \emph{combined room and distance weights} in a best-case and real world scenario}
 \label{fig:WeightingCDFrealRoom}
 \end{figure}
 
+
+The comparison between the performance of the weighting in a best case scenario and real world case, shows that there is indeed a error introduced by the room recognition. But the CDF (figure: \ref{fig:WeightingCDFrealRoom}) shows that this is error is overall very small and mainly due to a few samples with a large error, that increase the maximum error.
+
 However when taking into account this error, the real world performance of the proposed weighting method is almost the same as the existing simpler \emph{Distance Weights}. This is apparent in figure \ref{fig:WeightingCDFrealDistance}. The mean error is only a few centimetres lower (0.07m) and the maximum error even higher than with the \emph{Distance Weights}.
 
-\begin{figure}[h]
+\begin{figure}
 \centering
 \includegraphics[width=\textwidth]{Figures/WeightingCDF_realDistance}
 \decoRule
-\caption[Weighting method comparison]{CDF of the Localization error for the different weighting methods.}
+\caption[Weighting method comparison]{Localization error for the \emph{combined room and distance weights} and \emph{Distance Weights}}
 \label{fig:WeightingCDFrealDistance}
 \end{figure}
+
 
 \paragraph{To summarize:} 
 
