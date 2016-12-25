@@ -2,26 +2,9 @@
 
 \label{Chapter3} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
-In this chapter I will briefly explain the existing localization approach and then go into detail about my proposed improvements.\note{Better explain why I'm talking about Room recognition and Weighting in detail.}
+In chapter \ref{Chapter2} the two most common indoor localization approachers were introduced. In this chapter I now propose a localization system that combines those approaches, using fingerprinting to improve the range-based approach.
 
-\section{The existing approach}
-
-The following diagram shows the exiting approach that was used for previous work in the CDS group \cite{JoseMaster}:
-
-\begin{figure}[ht]
-\centering
-\includegraphics[width=\textwidth]{Figures/existingAproach}
-\decoRule
-\caption[The existing approach]{Block diagram of the existing approach.}
-\label{fig:existingApproach}
-\end{figure}
-
-It is a range-based approach and consists of two main phases. In the first phase, the training phase, a small number of training samples are gathered from the building. These samples are value-label pairs with the value being the \(RSSIs\) received from the different ANs and the label the \(x,y\) coordinates of the current location in the building. The samples are gathered with a smartphone. \red{In the case of \cite{josePaper} 20 points were used for a floor with approximate 250m\textsuperscript{2} and eight rooms}. The training samples are then used to train the ranging models explained in chapter \ref{Ranging}.
-
-\red{During localization, the second phase,} RSSI readings are provided by the smartphone (MN). These are subsequently converted into distance estimations \(d_i\)  using the ranging models. Trilateration is then applied to determine the smartphones location. The trilateration is ether performed as OLS without any weights or with weights inversely proportional to the estimated distances.
-
-\section{Proposed Improvements}
-
+\paragraph{}
 There is room for improvement in the way that the existing approach determines the trilateration weights. These weights are used to correct for the error introduced by the ranging. So to determine the weights one needs to know the ranging error. The existing approach makes the simple assumption, that the ranging error increases with distance to the AN. \red{This is not optimal as it assesses the error in \(d_i\) based only on \(d_i\) itself}.
 
 Supposed that the error is mainly affected by obstructions to the signal (walls, wires etc.). This would mean, that inside one room where there are no major obstructions to the signal the error should be \red{approximately the same}. So it should be possible to get an accurate estimate of the ranging error based on the room the device is currently in, therefore improving the weights and achieving a more accurate trilateration and localization.
@@ -82,10 +65,6 @@ The Weighting step is where the final weights are calculated. This is done with 
 For the training data the actual distance to the ANs is known. So by comparing the actual and estimated distances for all training samples in a room the ranging error can be calculated. The weights can then be defined as inversely proportional to the average variance of ranging errors in a room. This would lead to a separate set of weights for each room.
 
 The above method does not take \(d_i\) into account. It could be beneficial to combine the room weights with the distance based weights from the existing approach. \(d_i\) could also be use to discredit impossibly large estimations.
-
-\begin{equation}
-w_{i}=\frac{{d_i}^{-1}}{\sum_{n=1}^{N}{d_n}^{-1}}
-\end{equation}
 
 \begin{equation}
 w_{Ri}=\frac{(\sum_{s=1}^{S_R}{(D_{si}-d_{si})^2})^{-1}}{\sum_{i=1}^{N}{(\sum_{s=1}^{S_R}{(D_{sn}-d_{sn})^2})^{-1}}}
