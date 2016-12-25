@@ -4,7 +4,7 @@
 
 In chapter \ref{Chapter2} the two most common indoor localization approachers were introduced. In this chapter a localization system is proposed that combines those approaches, using fingerprinting to improve the range-based approach.
 
-\paragraph{}The proposed system adds a room recognition system and new weighting method to the standard range-based approach \note{insert reference}. The room recognition uses fingerprintig with $RSSI$ and magnetic field data to determine the devices current room. The new weightinh method then relies on the information provided by the room recognition to more accurately estimate the ranging error and improve the trilateration accuracy.
+\paragraph{}The proposed system adds a room recognition system and new weighting method to the standard range-based approach (see section \ref{therory:range-based}). The room recognition uses fingerprinting with $RSSI$ and magnetic field data to determine the devices current room. The new weighting method then relies on the information provided by the room recognition to more accurately estimate the ranging error and improve the trilateration accuracy.
 
 \begin{figure}[ht]
 \centering
@@ -14,9 +14,17 @@ In chapter \ref{Chapter2} the two most common indoor localization approachers we
 \label{fig:proposedApproach}
 \end{figure}
 
-As apparent in the block diagramm (Figure \ref{fig:proposedApproach} the standard range-based approach is not changed but simply extended. Therefore the main focus of this work are the two added components; the proposed room recognition systen and weighting method. In the remainder of this chapter those components are explained in detail. 
+As apparent in the block diagram (Figure \ref{fig:proposedApproach}) the standard range-based approach is not changed but simply extended. Therefore the main focus of this thesis are the two added components; the proposed room recognition system and weighting method. In the remainder of this chapter those components are explained in detail. 
 
 \subsection{Room Recognition}
+For the room recognition system a fingerprinting approach is \red{used}. Wile fingerprinting can be labour intensive when used for accurate localization, applying it to the problem of room recognition solves some of this problem. In this case the samples do not have to be labelled with accurate position measurements but only with the room. This makes the sample collection a lot faster, as not for every sample a accurate position needs to be measured.
+
+The fingerprinting map contains both $RSSI$ and magnetic field data ($B_{xyz}$). It makes sense to use $RSSI$ as it is already required for the rang-based approach. Previous work has also shown the applicability of  magnetic field data for localization. So the hypothesis is that including it in the fingerprinting map will increase the accuracy of the room recognition system.
+
+The fingerprinting map is used to train a multiclass SVM classifier, which can then be employed to predict the devices room. The SVM seems a good option for this task; It is very robust against outliers and also performs well with few samples in high dimensionality. Both things that other algorithms like k-NN have problems with.
+
+The goals for the evaluations are to check the hypothesis that the magnetic field data inproves the accuracy and also to find out what kind of training data works best.
+
 The objective is a simple, easy to train system, which predicts the devices current room with high accuracy.
 
 To achieve this I chose to use a fingerprinting method. The main problem with fingerprinting for \red{traditional} localization is that it needs a lot of reference points and for each reference point the exact location has to be measured. This is often very time consuming and therefore impractical.
@@ -27,7 +35,7 @@ The second thing to consider are which observation parameters to use as features
 
 \note{mention the third problem: how to collect pints and put in a better seaway into the development part}
 
-\note{Mention the reason i used SVM}
+\note{Mention the reason I used SVM}
 
 The fingerprinting map is used to train a multiclass SVM classifier, which is then employed during localization to predict the devices room.
 
