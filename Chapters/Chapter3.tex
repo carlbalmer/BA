@@ -14,16 +14,7 @@ In chapter \ref{Chapter2} the two most common indoor localization approachers we
 \label{fig:proposedApproach}
 \end{figure}
 
-As apparent in the block diagramm (Figure \ref{fig:proposedApproach} the standard range-based approach is not changed but simply extended. Therefore the main focus of this work are the two added components; the proposed room recognition systen and weighting method. In the remainder of this chapter those components are explained in detail.
-
-
-
-
-During localization the room recognition system detects the current room \(\#R\) based on \(RSSI\) and magnetic field data \(M_{x,y,z}\). The weighting model then uses this knowledge to calculate the weights. \red{It may also take \(d_i\) into account.}
-
-This means that during the training phase not only the ranging model but also the fingerprint-map and the weighting model need to be created. Thus to keep the approach practical this creation process should be as simple as possible.
-
-\red{The main focus of this work is this second layer and its components the room recognition and weighting.} 
+As apparent in the block diagramm (Figure \ref{fig:proposedApproach} the standard range-based approach is not changed but simply extended. Therefore the main focus of this work are the two added components; the proposed room recognition systen and weighting method. In the remainder of this chapter those components are explained in detail. 
 
 \subsection{Room Recognition}
 The objective is a simple, easy to train system, which predicts the devices current room with high accuracy.
@@ -36,23 +27,18 @@ The second thing to consider are which observation parameters to use as features
 
 \note{mention the third problem: how to collect pints and put in a better seaway into the development part}
 
+\note{Mention the reason i used SVM}
+
 The fingerprinting map is used to train a multiclass SVM classifier, which is then employed during localization to predict the devices room.
-\subsubsection{Development}
-\label{overviewRoomRecognition}
-I used my apartment as a small test bed to test the feasibility of this proposed room recognition system. The objective was to answer the following questions:
+
+This means that during the training phase not only the ranging model but also the fingerprint-map and the weighting model need to be created. Thus to keep the approach practical this creation process should be as simple as possible.
+
+
 \begin{itemize}
 \item \red{What is the best way to gather the RPs for the fingerprinting-map How many RPs are needed and how does their distribution affect the accuracy?}
 \item How does the magnetic field data influence the accuracy. Does it improve the accuracy as presumed?
 \item What accuracy can be expected form the system. Does it even achieve high enough accuracy?
 \end{itemize}
-
-To answer the first question I gathered a number of fingerprinting maps with different properties and evaluated their accuracy.
-
-This experiment concluded that the highest accuracy could be achieved by taking a lot of RPs at the borders of the room (doors, walls between rooms) and only a few in the center.This conclusion is also supported by the theory of SWM as the RPs at the borders end up being the support vectors that define the hyperplane.
-
-Using this technique I was able to achieve a \note{inser percent} accuracy. \red{Which I think schould be enough for this use case.}
-
-I also compared the performance with and without magnetic field data. Including the magnetic field data generally increased the accuracy by \note{inset percent here}
 
 \subsection{Weighting}
 
@@ -81,7 +67,9 @@ To conclude the final weighting method is this:
 \note{insert formula}
 
 
-
+\section{Copy Paste}
 There is room for improvement in the way that the existing approach determines the trilateration weights. These weights are used to correct for the error introduced by the ranging. So to determine the weights one needs to know the ranging error. The existing approach makes the simple assumption, that the ranging error increases with distance to the AN. \red{This is not optimal as it assesses the error in \(d_i\) based only on \(d_i\) itself}.
 
 Supposed that the error is mainly affected by obstructions to the signal (walls, wires etc.). This would mean, that inside one room where there are no major obstructions to the signal the error should be \red{approximately the same}. So it should be possible to get an accurate estimate of the ranging error based on the room the device is currently in, therefore improving the weights and achieving a more accurate trilateration and localization.
+
+During localization the room recognition system detects the current room \(\#R\) based on \(RSSI\) and magnetic field data \(M_{x,y,z}\). The weighting model then uses this knowledge to calculate the weights. \red{It may also take \(d_i\) into account.}
