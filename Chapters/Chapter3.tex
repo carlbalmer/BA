@@ -1,27 +1,23 @@
-\chapter{The localization system} % Main chapter title
+\chapter{The localization system}
 
-\label{Chapter3} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
+\label{Chapter3}
 
-In chapter \ref{Chapter2} the two most common indoor localization approachers were introduced. In this chapter I now propose a localization system that combines those approaches, using fingerprinting to improve the range-based approach.
+In chapter \ref{Chapter2} the two most common indoor localization approachers were introduced. In this chapter a localization system is proposed that combines those approaches, using fingerprinting to improve the range-based approach.
 
-\paragraph{}
-There is room for improvement in the way that the existing approach determines the trilateration weights. These weights are used to correct for the error introduced by the ranging. So to determine the weights one needs to know the ranging error. The existing approach makes the simple assumption, that the ranging error increases with distance to the AN. \red{This is not optimal as it assesses the error in \(d_i\) based only on \(d_i\) itself}.
-
-Supposed that the error is mainly affected by obstructions to the signal (walls, wires etc.). This would mean, that inside one room where there are no major obstructions to the signal the error should be \red{approximately the same}. So it should be possible to get an accurate estimate of the ranging error based on the room the device is currently in, therefore improving the weights and achieving a more accurate trilateration and localization.
-
-So I propose a room recognition system based on which the weights for the trilateration are determined.
-
-\noindent The new approach would look like this:
+\paragraph{}The proposed system adds a room recognition system and new weighting method to the standard range-based approach \note{insert reference}. The room recognition uses fingerprintig with $RSSI$ and magnetic field data to determine the devices current room. The new weightinh method then relies on the information provided by the room recognition to more accurately estimate the ranging error and improve the trilateration accuracy.
 
 \begin{figure}[ht]
 \centering
 \includegraphics[width=\textwidth]{Figures/proposedApporach}
 \decoRule
-\caption[The proposed approach]{Block diagram of the proposed approach.}
+\caption[The proposed approach]{Block diagram of the proposed system.}
 \label{fig:proposedApproach}
 \end{figure}
 
-The main approach is not changed. It is extended by a \red{second layer}, which is responsible for determining the weights. This layer consist of a room recognition system based on fingerprinting and a weighting model \red{which relates room and weights}.
+As apparent in the block diagramm (Figure \ref{fig:proposedApproach} the standard range-based approach is not changed but simply extended. Therefore the main focus of this work are the two added components; the proposed room recognition systen and weighting method. In the remainder of this chapter those components are explained in detail.
+
+
+
 
 During localization the room recognition system detects the current room \(\#R\) based on \(RSSI\) and magnetic field data \(M_{x,y,z}\). The weighting model then uses this knowledge to calculate the weights. \red{It may also take \(d_i\) into account.}
 
@@ -83,3 +79,9 @@ For this I used the dataset gatered from the third floor of the \red{IAM-Buildin
 To conclude the final weighting method is this:
 
 \note{insert formula}
+
+
+
+There is room for improvement in the way that the existing approach determines the trilateration weights. These weights are used to correct for the error introduced by the ranging. So to determine the weights one needs to know the ranging error. The existing approach makes the simple assumption, that the ranging error increases with distance to the AN. \red{This is not optimal as it assesses the error in \(d_i\) based only on \(d_i\) itself}.
+
+Supposed that the error is mainly affected by obstructions to the signal (walls, wires etc.). This would mean, that inside one room where there are no major obstructions to the signal the error should be \red{approximately the same}. So it should be possible to get an accurate estimate of the ranging error based on the room the device is currently in, therefore improving the weights and achieving a more accurate trilateration and localization.
