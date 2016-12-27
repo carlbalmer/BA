@@ -121,6 +121,7 @@ This approach is able to achieve good accuracies in an indoor environment. The p
 Earths natural magnetic field has already been used for localization, mainly as a compass to determine the devices heading in PDR systems. However, the presence of magnetic field anomalies make accurate heading determination difficult for indoor applications. The anomalies are caused by the ferrous structures in the building materials, electrical devices, cables and tubes. Previous research suggests that these anomalies can be used in a fingerprinting approach to determine a devices location\cite{haverinen2009global,angermann2012CharacterizationMagnetic,Li2012feasableMagnetic}. They show that the magnetic field anomalies have sufficient local variability and are mostly stable over time. Therefore they should be applicable for use in localization.
 
 \subsection{Support Vector Machine}
+\label{theory:SVM}
 The Support Vector Machine (SVM) is one of the most widely used machine learning algorithms. It predicts the labels of new (unknown) samples based on previous (known) examples. In its basic form it only supports two labels. This is called binary classification.
 
 The known examples are called training data. It consists of instance-label pairs \(\left ( x_{i}, y_{i} \right ), i=1,...,l\) where \(x_{i}\in R^{n}\) and \(y_{i}\in \left \{ -1,1 \right \}\). \(x_{i}\) represents the samples's observable features while the label \(y_{i}\) defines in which category it belongs.
@@ -156,10 +157,4 @@ But the training data may not be linearly separable. In this case the so called 
 
 To perform multy-class classification the "one-against-one" approach can be used. For \(k\) classes \(k\left ( k-1 \right )/2\) classifiers are trained. Each binary classifier is then considered to vote for a class. The sample is then placed in the class with the most votes\cite{chang2011libsvm}.
 
-
-
-
-%----------------------------------------------------------------------------------------
-%	OLD
-%----------------------------------------------------------------------------------------
-
+\red{Compared to other cool algorythms like knn}

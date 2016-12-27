@@ -4,7 +4,7 @@
 
 In chapter \ref{Chapter2} the two most common indoor localization approachers were introduced. In this chapter a localization system is proposed that combines those approaches, using fingerprinting to improve the range-based approach.
 
-\paragraph{}The proposed system adds a room recognition system and new weighting method to the standard range-based approach (see section \ref{therory:range-based}). The room recognition uses fingerprinting with $RSSI$ and magnetic field data to determine the devices current room. The new weighting method then relies on the information provided by the room recognition to more accurately estimate the ranging error and improve the trilateration accuracy.
+\paragraph{}The proposed system adds a room recognition system and new weighting method to the standard range-based approach (see chapter \ref{therory:range-based}). The room recognition uses fingerprinting with $RSSI$ and magnetic field data to determine the devices current room. The new weighting method then relies on the information provided by the room recognition to more accurately estimate the ranging error and improve the trilateration accuracy.
 
 \begin{figure}[ht]
 \centering
@@ -17,36 +17,15 @@ In chapter \ref{Chapter2} the two most common indoor localization approachers we
 As apparent in the block diagram (Figure \ref{fig:proposedApproach}) the standard range-based approach is not changed but simply extended. Therefore the main focus of this thesis are the two added components; the proposed room recognition system and weighting method. In the remainder of this chapter those components are explained in detail. 
 
 \subsection{Room Recognition}
-For the room recognition system a fingerprinting approach is \red{used}. Wile fingerprinting can be labour intensive when used for accurate localization, applying it to the problem of room recognition solves some of this problem. In this case the samples do not have to be labelled with accurate position measurements but only with the room. This makes the sample collection a lot faster, as not for every sample a accurate position needs to be measured.
+For the room recognition system is based on a fingerprinting approach. The fingerprint-map consists of $RSSI$ and magnetic field data ($B_{xyz}$). A multiclass SVM classifier is trained with the fingerprinting map and can then be employed to predict the devices room.
 
-The fingerprinting map contains both $RSSI$ and magnetic field data ($B_{xyz}$). It makes sense to use $RSSI$ as it is already required for the rang-based approach. Previous work has also shown the applicability of  magnetic field data for localization. So the hypothesis is that including it in the fingerprinting map will increase the accuracy of the room recognition system.
+Wile fingerprinting can be labour intensive when used for accurate localization, applying it to the problem of room recognition solves some of this problem. In this case it is not required to mesure the exact location of each samlpe. The samples only need to be labelled with the room. This makes the sample collection a lot faster.
 
-The fingerprinting map is used to train a multiclass SVM classifier, which can then be employed to predict the devices room. The SVM seems a good option for this task; It is very robust against outliers and also performs well with few samples in high dimensionality. Both things that other algorithms like k-NN have problems with.
+Magnetic field data ($B_{xyz}$) is also included in the fingerprinting map. It is predicted that this will increase the accuracy of the room recognition system as previous work has shown the applicability of  magnetic field data for localization. \emph{This hypothesis needs to be confirmed in the evaluation.}
 
-The goals for the evaluations are to check the hypothesis that the magnetic field data inproves the accuracy and also to find out what kind of training data works best.
+Another question to be answered is what kind of fingerprinting map yields the highest accuracy; \emph{a equally distributed map or a unequally distributed one with more samples at the borders }(walls and doors between rooms).
 
-The objective is a simple, easy to train system, which predicts the devices current room with high accuracy.
-
-To achieve this I chose to use a fingerprinting method. The main problem with fingerprinting for \red{traditional} localization is that it needs a lot of reference points and for each reference point the exact location has to be measured. This is often very time consuming and therefore impractical.
-
-However for room recognition the RPs only need to be labeled with a room number. In practice this means that\red{, depending on the sampling rate of the sensors,} a large number of RPs can be collected by walking once through each room and "scanning" it with the smartphone. Thus a high density map can be created in in a short time.
-
-The second thing to consider are which observation parameters to use as features in the fingerprinting map. In a best case there should be a high number of attributes with high local variability and they should not require any additional hardware or setup. It makes sense to use the RSSI values as those are already required for the ranging and trilateration. Additionally I chose to use the magnetometer readings as previous research has shown its applicably for fingerprinting-localization.
-
-\note{mention the third problem: how to collect pints and put in a better seaway into the development part}
-
-\note{Mention the reason I used SVM}
-
-The fingerprinting map is used to train a multiclass SVM classifier, which is then employed during localization to predict the devices room.
-
-This means that during the training phase not only the ranging model but also the fingerprint-map and the weighting model need to be created. Thus to keep the approach practical this creation process should be as simple as possible.
-
-
-\begin{itemize}
-\item \red{What is the best way to gather the RPs for the fingerprinting-map How many RPs are needed and how does their distribution affect the accuracy?}
-\item How does the magnetic field data influence the accuracy. Does it improve the accuracy as presumed?
-\item What accuracy can be expected form the system. Does it even achieve high enough accuracy?
-\end{itemize}
+The \emph{support vector machine} was chosen as the classifier because it seemed better suited for this kind of poroblem, compared to k-NN (see chapter \ref{theory:SVM}).
 
 \subsection{Weighting}
 
