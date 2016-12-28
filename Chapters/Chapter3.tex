@@ -25,19 +25,29 @@ Magnetic field data ($B_{xyz}$) is also included in the fingerprinting map. It i
 
 Another question to be answered is what kind of fingerprinting map yields the highest accuracy; \emph{a equally distributed map or a unequally distributed one with more samples at the borders }(walls and doors between rooms).
 
-The \emph{support vector machine} was chosen as the classifier because it seemed better suited for this kind of poroblem, compared to k-NN (see chapter \ref{theory:SVM}).
+The \emph{support vector machine} was chosen as the classifier because it is, compared to othe common cladsifiers like k-NN , better suited for this kind of poroblem. It has no problems with outliers in the training data; It only chooses the most significant samples as support vectors. Also it performs well with a small amount of samples and high dimentionality. k-NN on the other hand is very suseptible to outliers and generally needs more samples to offer good results.
 
 \subsection{Weighting}
 
-The Weighting step is where the final weights are calculated. This is done with a mathematical model, which relates the available information, \(d_i,\#R\) to a set of weights \(w_i\). This model should be created during the training phase.
+Supposed that the ranging error is mainly caused by obstructions to the signal (walls, wires etc.). This would mean that for any two samples inside one room the ranging error should be roughly the same.
 
-For the training data the actual distance to the ANs is known. So by comparing the actual and estimated distances for all training samples in a room the ranging error can be calculated. The weights can then be defined as inversely proportional to the average variance of ranging errors in a room. This would lead to a separate set of weights for each room.
+Therefore it should be possible to estimate the ranging error of a unknown sample by calculating the average error of some known training samples located in the same room.
 
-The above method does not take \(d_i\) into account. It could be beneficial to combine the room weights with the distance based weights from the existing approach. \(d_i\) could also be use to discredit impossibly large estimations.
+The proposed weighting method defines the weights for each room as inversely proportional to the average ranging error for each anchor node. This results in a separate set of weights for each room. The room recognition is used to decide which set of weights to use.
+
+The weights for each room are calculated bevorehand based on training samples:
 
 \begin{equation}
 w_{Ri}=\frac{(\sum_{s=1}^{S_R}{(D_{si}-d_{si})^2})^{-1}}{\sum_{i=1}^{N}{(\sum_{s=1}^{S_R}{(D_{sn}-d_{sn})^2})^{-1}}}
 \end{equation}
+
+For the training data the actual distance to the ANs is known. So by comparing the actual and estimated distances for all training samples in a room the ranging error can be calculated.
+
+The efficacy of this method will need to be evluated.
+
+It could also be beneficial to combine the 
+
+The above method does not take \(d_i\) into account. It could be beneficial to combine the room weights with the distance based weights from the existing approach. \(d_i\) could also be use to discredit impossibly large estimations.
 
 
 \subsubsection{Development}
@@ -60,3 +70,5 @@ There is room for improvement in the way that the existing approach determines t
 Supposed that the error is mainly affected by obstructions to the signal (walls, wires etc.). This would mean, that inside one room where there are no major obstructions to the signal the error should be \red{approximately the same}. So it should be possible to get an accurate estimate of the ranging error based on the room the device is currently in, therefore improving the weights and achieving a more accurate trilateration and localization.
 
 During localization the room recognition system detects the current room \(\#R\) based on \(RSSI\) and magnetic field data \(M_{x,y,z}\). The weighting model then uses this knowledge to calculate the weights. \red{It may also take \(d_i\) into account.}
+
+The Weighting step is where the final weights are calculated. This is done with a mathematical model, which relates the available information, \(d_i,\#R\) to a set of weights \(w_i\). This model should be created during the training phase.
