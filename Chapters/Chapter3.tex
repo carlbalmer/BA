@@ -35,13 +35,16 @@ Therefore it should be possible to estimate the ranging error of a unknown sampl
 
 The proposed weighting method defines the weights for each room as inversely proportional to the average ranging error for each anchor node. This results in a separate set of weights for each room. The room recognition is used to decide which set of weights to use.
 
-The weights for each room are calculated bevorehand based on training samples:
+The weights for each room are calculated bevorehand based on training samples.
 
+For anchor nodes N and training samples S:
 \begin{equation}
 w_{Ri}=\frac{(\sum_{s=1}^{S_R}{(D_{si}-d_{si})^2})^{-1}}{\sum_{i=1}^{N}{(\sum_{s=1}^{S_R}{(D_{sn}-d_{sn})^2})^{-1}}}
 \end{equation}
 
-For the training data the actual distance to the ANs is known. So by comparing the actual and estimated distances for all training samples in a room the ranging error can be calculated.
+
+
+For the training data both the actual distance $D_i$ and the eatimated distance $d_i$ to the ANs is known. So by comparing the actual and estimated distances for all training samples in a room the ranging error can be calculated.
 
 The efficacy of this method will need to be evluated.
 
