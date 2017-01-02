@@ -23,24 +23,28 @@ In contrast to outdoor localization, where we have GPS and other established sol
 
 \section{Motivation}
 
-This has been an active research field in the last few years with many different techniques proposed \cite{surveyIndoorTechniques,surveyWirelessPersonal}. One common approach is to base the localization on WiFi radio signals. WiFi infrastructure is already present in almost every building and can easily be upgraded with standardized off the shelf hardware. These radio-based techniques are usually classified into range-based and range-free methods\cite{FineGrainedIndoorTracking}.
+Indoor localization has been an active research field in the last few years with many different techniques proposed \cite{surveyIndoorTechniques,surveyWirelessPersonal}. One common approach is to base the localization on WiFi radio signals. WiFi infrastructure is already present in almost every building and can easily be upgraded with standardized off the shelf hardware. These radio-based techniques are usually classified into range-based and range-free methods\cite{FineGrainedIndoorTracking}.
 
 Fingerprinting is a common range-free method, where known radio parameters are mapped to a location. Later this map is used to determine the devices location based on the current radio parameters. Fingerprinting can achieve good accuracy but creating the map is very labor intensive\cite{FineGrainedIndoorTracking}.
 
-Range-based methods use the radio parameters to try to approximate the distance between the mobile device (Mobile Node) and the signal emitters (Anchor Nodes). This process is called ranging. Trilateration is then performed on these distances to determine the position of the MN. The ranging process is prone to errors caused by multipath propagation.\cite{FineGrainedIndoorTracking}.
+Range-based methods use the radio parameters to try to approximate the distance between the mobile device (Mobile Node) and the signal emitters (Anchor Nodes). This process is called ranging. Trilateration is then performed on these distances to determine the position of the MN. The ranging process is prone to errors caused by NLOS and multipath propagation.\cite{FineGrainedIndoorTracking}.
 
 %----------------------------------------------------------------------------------------
 \section{Overview and Contributions}
 
-Previous research at the CDS group used the smartphones received signal strength indicator in a range-based approach, using a regression model for ranging and least squares optimization for solving the trilateration problem \note{Citation needed}.In this work I investigate if this approach can be improved by adding a room recognition layer to it. I use the room recognition to assign weights to the ranges based on the devices current room and so improve the trilateration with weighted least squares. For the room recognition I employ a fingerprinting map built from the RSSI and the magnetic field readings of the smartphones internal magnetometer.
+In this work I propose a localization system which combines the range-based and fingerprinting approach, using fingerprinting to improve the range-based approach.
+
+The range-based approach is extended by a room recognition system based on fingerprinting with WiFi and magnetic field data. The information provided by the room recognition is used to assign weights to the ranges based on the devices current room and so improve the trilateration and improve the accuracy of the range-based approach.
+
+The proposed localization system is implemented in a test bed and the room recognition and weighting method are evaluated.
 
 My main findings are summarized as follows:
 \begin{itemize}
-\item The proposed room recognition method is feasible, has sufficiently high accuracy and the map is not very labor intensive to create \note{Formulation}.
+\item The proposed room recognition method is able to achieve very high accuracies even with only a small number of training samples.
 \item The inclusion of magnetic field data significantly improves the accuracy of the room recognition.
-\item Setting weights based on the room recognition increases the trilaterations accuracy, although not very significantly.
+\item Defining trilateration weights based on the room recognition increases the localization accuracy. The results are, however, not significantly better than existing simpler weighting methods.
 \end{itemize}
 
 \section{Structure of this Work}
 
-\noindent In the remainder of this work, \red{related works} and the theoretical background is reviewed in chapter 2. The room recognition approach is introduced and investigated in chapter 3, the weighting methods in chapter 4. In chapter 5 the methods from the previous chapters are then evaluated. Chapter 6 concludes the thesis. \\\note{Rewrite this part}\\\note{rework the section headings and page beak}
+In the remainder of this work, and the theoretical background is reviewed in chapter \ref{Chapter2}. The proposed localization system is introduced in chapter \ref{Chapter3} and the room recognition and weighting are explained in detail. Chapters \ref{Chapter4} and \ref{Chapter5} deal with the test bed implementation used for the evaluation and the evaluation results respectively. Final chapter \ref{Chapter6} summarizes the work and concludes the evaluation results.

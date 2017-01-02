@@ -19,11 +19,11 @@ The collected samples are transferred to the computer where the calculations and
 \centering
 \includegraphics[width=\textwidth]{Figures/SystemImplementationOverview}
 \decoRule
-\caption[localization system overview]{Diagram of the test bed implementation}
+\caption[Test bed implementation overview]{Overview of the test bed implementation}
 \label{fig:localizationSystemOverview}
 \end{figure}
 
-This test bed implementation splits the system into an online (collecting samples) and offline (calculations on the computer) part. This allows to try out and empirically compare different configurations of the localisation system under the exact same conditions.
+This test bed implementation splits the system into an online (collecting samples) and offline (calculations on the computer) part. This way it is possible to try out and empirically compare different configurations of the localisation system under the exact same conditions.
 
 The set-up of this test bed comprises both hardware and software specific configurations for each component. The remainder of this chapter details these configurations.
 
@@ -48,7 +48,7 @@ The mobile node is an android smartphone of the model \emph{One Plus One}. It ha
 \item \textbf{Memory:} 3 GB RAM
 \end{itemize}
 
-The WiFi module and the magnetometer are used for the sample collection.
+The WiFi module and the magnetometer are used for the sample collection. The magnetometer is reasonably accurate while the off-the-shelf WiFi interface is  prone to interferences.
 
 
 \section{Software Set-up}
@@ -66,11 +66,13 @@ The samples consist of:
 
 On android the WiFi module can not be accessed directly. Wi-Fi scans have to be initiated through the \code{AndroidAPI} and it only supports full scans\cite{brouwers2014incremental}. Full scans take longer so it is only possible to take one RSSI measurement every 1.5 seconds.
 
+Due to the low sampling rate it is not practical to apply filters to remove noise from the $RSSI$. It is also not possible to access channel state information which could be used to mitigate some of the multipath effects.
+
 To collect one sample the application takes the average of five RSSI and magnetometer measurements, each spaced 2 seconds apart. The samples are then saved to a \code{.csv} file on the smartphones internal storage and later transferred to the computer.
 
 \subsection{Training and testing of the system}
 
-Training, testing and evaluation of the localization system is done offline on a computer using Matlab, WEKA and a custom Java program for the trilateration.
+Training, testing and evaluation of the localization system is done offline on a computer using Matlab, WEKA and a Java program for the trilateration.
 
 First the collected samples are grouped into training and testing datasets and the ranging, room recognition and weighting models are generated from the training data.
 
@@ -80,23 +82,23 @@ Then the trilateration-tool reads the testing data, applies the models and solve
 \centering
 \includegraphics[width=\textwidth]{Figures/Offline_Set-Up}
 \decoRule
-\caption[Offline implementation]{Diagram of the offline implementation}
+\caption[Test bed offline implementation]{Diagram of the offline implementation}
 \label{fig:offlineImplementation}
 \end{figure}
 
 \subsubsection*{Room Recognition Model}
-The SVM for the room recognition is trained in WEKA. It generates a multiclass SVM model from the training data set using grid search for the parameter selection. The training data set consists of samples containing RSSI \((RSSI_{i})\) and magnetic fiald \((B_{xyz})\) values labelled with the room number \((R\#)\).
+The SVM for the room recognition is trained in WEKA. It generates a multiclass SVM model from the training data set and may use grid search for the parameter selection. The training data set consists of samples containing RSSI \((RSSI_{i})\) and magnetic field \((B_{xyz})\) values labelled with the room number \((R\#)\).
 
 \subsubsection*{Ranging Model}
 For the ranging model the \(\alpha, \beta\) parameters from equation \ref{eqn:non-linear path loss model} need to be determined for each AN. This is done by fitting the equation to the testing data in \emph{Matlab}. The testing data set is a list of RSSI values and the corresponding distance \((D_{i})\) to the AN.
 
-The resulting non-linear path loss model is inaccurate with high RSSI values (samples verry close to the AN). To account for that the distances for these high values are set by hand.
+The resulting non-linear regression model is inaccurate with high RSSI values (samples verry close to the AN). To account for that the distances for these high values are set by hand.
 
 \subsubsection*{Weighting Model}
 
-the weighting model is a function that determines the weights \((w_{i})\) based on the predicted distances to the AN \((d_{i})\) and the predicted room number \((r\#)\).
+The \emph{Room Weights} are calculated by hand based on equation \ref{eqn: Room Weights} in a spreadsheet program and imported into the trilateration tool.
 
-The weighting model is determined by hand in a spreadsheet program. 
+The \emph{Distance Weights} are calculated by the trilateration tool during run time based on the equation \ref{eqn: distance weights}.
 
 \subsubsection*{Testing}
 

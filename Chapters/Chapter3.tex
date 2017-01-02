@@ -10,68 +10,48 @@ In chapter \ref{Chapter2} the two most common indoor localization approachers we
 \centering
 \includegraphics[width=\textwidth]{Figures/proposedApporach}
 \decoRule
-\caption[The proposed approach]{Block diagram of the proposed system.}
+\caption[Proposed localization system]{Block diagram of the proposed localization system.}
 \label{fig:proposedApproach}
 \end{figure}
 
 As apparent in the block diagram (Figure \ref{fig:proposedApproach}) the standard range-based approach is not changed but simply extended. Therefore the main focus of this thesis are the two added components; the proposed room recognition system and weighting method. In the remainder of this chapter those components are explained in detail. 
 
 \subsection{Room Recognition}
-For the room recognition system is based on a fingerprinting approach. The fingerprint-map consists of $RSSI$ and magnetic field data ($B_{xyz}$). A multiclass SVM classifier is trained with the fingerprinting map and can then be employed to predict the devices room.
+The room recognition system is based on a fingerprinting approach. The fingerprint-map consists of $RSSI$ and magnetic field data ($B_{xyz}$). A multi-class SVM classifier is trained with the fingerprinting map and can then be employed to predict the devices room.
 
-Wile fingerprinting can be labour intensive when used for accurate localization, applying it to the problem of room recognition solves some of this problem. In this case it is not required to mesure the exact location of each samlpe. The samples only need to be labelled with the room. This makes the sample collection a lot faster.
+Wile fingerprinting can be labour intensive when used for accurate localization, applying it to the problem of room recognition solves some of this problem. In this case it is not required to measure the exact location of each sample. The samples only need to be labelled with the room. This makes the sample collection a lot faster.
 
 Magnetic field data ($B_{xyz}$) is also included in the fingerprinting map. It is predicted that this will increase the accuracy of the room recognition system as previous work has shown the applicability of  magnetic field data for localization. \emph{This hypothesis needs to be confirmed in the evaluation.}
 
 Another question to be answered is what kind of fingerprinting map yields the highest accuracy; \emph{a equally distributed map or a unequally distributed one with more samples at the borders }(walls and doors between rooms).
 
-The \emph{support vector machine} was chosen as the classifier because it is, compared to othe common cladsifiers like k-NN , better suited for this kind of poroblem. It has no problems with outliers in the training data; It only chooses the most significant samples as support vectors. Also it performs well with a small amount of samples and high dimentionality. k-NN on the other hand is very suseptible to outliers and generally needs more samples to offer good results.
+The support vector machine was chosen as the classifier because it is, compared to other common classifiers like k-NN , better suited for this kind of problem. It has no problems with outliers in the training data; It only chooses the most significant samples as support vectors. Also it performs well with a small amount of samples. k-NN on the other hand is very susceptible to outliers and generally needs more samples to offer good results.
 
 \subsection{Weighting}
 
-Supposed that the ranging error is mainly caused by obstructions to the signal (walls, wires etc.). This would mean that for any two samples inside one room the ranging error should be roughly the same.
+Supposed that the ranging error is mainly caused by obstructions to the signal (walls, wires etc.). This would mean that for any two samples inside one room the ranging error should be roughly the same. Therefore it should be possible to estimate the ranging error of a unknown sample by calculating the average error of some known training samples located in the same room.
 
-Therefore it should be possible to estimate the ranging error of a unknown sample by calculating the average error of some known training samples located in the same room.
+The proposed weighting method defines the weights for each room as inversely proportional to the average ranging error for each anchor node. This results is a separate set of weights for each room. The room recognition is used to decide which set of weights to use.
 
-The proposed weighting method defines the weights for each room as inversely proportional to the average ranging error for each anchor node. This results in a separate set of weights for each room. The room recognition is used to decide which set of weights to use.
+For room $R$ the weight $w_{Ri}$ associated with the distance estimation $d_i$ to anchor node $AN_i$ is calculated based on all the training samples $S_R$ in the room.
 
-The weights for each room are calculated bevorehand based on training samples.
-
-For anchor nodes N and training samples S:
 \begin{equation}
-w_{Ri}=\frac{(\sum_{s=1}^{S_R}{(D_{si}-d_{si})^2})^{-1}}{\sum_{i=1}^{N}{(\sum_{s=1}^{S_R}{(D_{sn}-d_{sn})^2})^{-1}}}
+\begin{split}
+w_{Ri}\;\; & =\frac{E_i^{-1}}{\sum_{n=1}^{N}{E_n^{-1}}}\\
+E_i\;\; & = \sum_{s=1}^{S_R}{(D_{si}-d_{si})^2}
+\end{split}
+\label{eqn: Room Weights}
 \end{equation}
 
+The inverse ranging error for anchor node $AN_i$ is divided by the sum of the inverse ranging error for all anchor nodes $N$. The ranging error is represented by the sum of the squared difference between the actual and estimated distance $(D_{si}-d_{si})^2$ for each training sample $s$ $(s=1..S)$.
 
+In the remainder of this work this weighting method will be referred to as \emph{Room Weights}.
 
-For the training data both the actual distance $D_i$ and the eatimated distance $d_i$ to the ANs is known. So by comparing the actual and estimated distances for all training samples in a room the ranging error can be calculated.
+I could also be beneficial to combine the new \emph{Room Weights} with the \emph{Distance Weights} from equation \ref{eqn: distance weights} by adding them together.
 
-The efficacy of this method will need to be evluated.
+%\begin{equation}
+%w_{R+Di} = w_{Ri} + w_{Di}
+%\label{eqn: Room + Distance Weights}
+%\end{equation}
 
-It could also be beneficial to combine the 
-
-The above method does not take \(d_i\) into account. It could be beneficial to combine the room weights with the distance based weights from the existing approach. \(d_i\) could also be use to discredit impossibly large estimations.
-
-
-\subsubsection{Development}
-\label{WeightingModelDefinition}
-
-In order to test these hypothesis and determine the best performing weighting model, I experimented with different ways to calculate and combine the room and distance weights.
-
-For this I used the dataset gatered from the third floor of the \red{IAM-Building}. The performance of the different methods was asses under the assumption of 100\% room recognitoin accuracy and then compared with OLS and the distance weights form the existing approach.
-
-\red{From this experiment I found out, that the room weights by themselves already performed quit well. Combining them with the distance weights removes some of the outlines and generally improves the performance. Not considering the outlines in the room weights calculation decreased the performance.}
-
-To conclude the final weighting method is this:
-
-\note{insert formula}
-
-
-\section{Copy Paste}
-There is room for improvement in the way that the existing approach determines the trilateration weights. These weights are used to correct for the error introduced by the ranging. So to determine the weights one needs to know the ranging error. The existing approach makes the simple assumption, that the ranging error increases with distance to the AN. \red{This is not optimal as it assesses the error in \(d_i\) based only on \(d_i\) itself}.
-
-Supposed that the error is mainly affected by obstructions to the signal (walls, wires etc.). This would mean, that inside one room where there are no major obstructions to the signal the error should be \red{approximately the same}. So it should be possible to get an accurate estimate of the ranging error based on the room the device is currently in, therefore improving the weights and achieving a more accurate trilateration and localization.
-
-During localization the room recognition system detects the current room \(\#R\) based on \(RSSI\) and magnetic field data \(M_{x,y,z}\). The weighting model then uses this knowledge to calculate the weights. \red{It may also take \(d_i\) into account.}
-
-The Weighting step is where the final weights are calculated. This is done with a mathematical model, which relates the available information, \(d_i,\#R\) to a set of weights \(w_i\). This model should be created during the training phase.
+The effectiveness of both the \emph{Room Weights} and \emph{Room+Distance Weights} will need to be evaluated.

@@ -75,7 +75,7 @@ headsepline, % Uncomment to get a line under the header
 %	THESIS INFORMATION
 %----------------------------------------------------------------------------------------
 
-\thesistitle{RSSI \& Magnetometer based fingerprinting localization in indoor wireless environments} % Your thesis title, this is used in the title and abstract, print it elsewhere with \ttitle
+\thesistitle{Received signal strength-inertial sensor based fingerprinting localization in indoor wireless environments} % Your thesis title, this is used in the title and abstract, print it elsewhere with \ttitle
 %\title{Bachelors Thesis Carl Balmer}
 \supervisor{Jose \textsc{Carerra}} % Your supervisor's name, this is used in the title page, print it elsewhere with \supname
 \examiner{} % Your examiner's name, this is not currently used anywhere in the template, print it elsewhere with \examname
@@ -85,7 +85,7 @@ headsepline, % Uncomment to get a line under the header
 
 \subject{Indoor Localization} % Your subject area, this is not currently used anywhere in the template, print it elsewhere with \subjectname
 \keywords{} % Keywords for your thesis, this is not currently used anywhere in the template, print it elsewhere with \keywordnames
-\university{\href{http://www.unibe.ch}{Universität Bern}} % Your university's name and URL, this is used in the title page and abstract, print it elsewhere with \univname
+\university{\href{http://www.unibe.ch}{University of Bern}} % Your university's name and URL, this is used in the title page and abstract, print it elsewhere with \univname
 \department{\href{http://www.inf.unibe.ch/}{Institute of Computer Science}} % Your department's name and URL, this is used in the title page and abstract, print it elsewhere with \deptname
 \group{\href{http://www.cds.unibe.ch}{Communication and Distributed Systems}} % Your research group's name and URL, this is used in the title page, print it elsewhere with \groupname
 \faculty{\href{http://www.philnat.unibe.ch/}{Faculty of Science}} % Your faculty's name and URL, this is used in the title page and abstract, print it elsewhere with \facname
@@ -127,12 +127,12 @@ headsepline, % Uncomment to get a line under the header
 \end{flushright}
 \end{minipage}\\[3cm]
  
-\large \textit{A thesis submitted in fulfillment of the requirements\\ for the degree of \degreename}\\[0.3cm] % University requirement text
-\textit{in the}\\[0.4cm]
+\emph{Head of Research}\\[0.3cm] % University requirement text
+\large \textsc{Professor Dr. Torsten Braun}\\[0.4cm]
 \groupname\\\deptname\\[2cm] % Research group name and department name
  
 {\large \today}\\[2cm] % Date
-\includegraphics[scale=0.4]{Logo} % University/department logo - uncomment to place it
+%\includegraphics[scale=0.4]{Logo} % University/department logo - uncomment to place it
  
 \vfill
 \end{center}
@@ -174,13 +174,9 @@ headsepline, % Uncomment to get a line under the header
 \begin{abstract}
 \addchaptertocentry{\abstractname} % Add the abstract to the table of contents
 
-The Thesis Abstract is written here (and usually kept to just this page). The page is kept centered vertically so can expand into the blank space above the title too\ldots
+In this thesis a new indoor localization system is proposed, combining fingerprinting and range-based approaches. The main contributions are a room recognition system based on fingerprinting and a new weighting method for range-based trilateration using the information provided by the room recognition.
 
-\end{abstract}
-
-%----------------------------------------------------------------------------------------
-%	ACKNOWLEDGEMENTS
-%----------------------------------------------------------------------------------------
+The system is implemented and evaluated in a test bed deployment on a floor of the university building. The results show that the room recognition is able to achieve a high accuracy (80-90\%) even with a small number of training samples. The room recognition based weighting method does increase the accuracy of the range-based localization. It does, however, not perform better than existing simpler weighting methods.
 
 \begin{acknowledgements}
 \addchaptertocentry{\acknowledgementname} % Add the acknowledgements to the table of contents
@@ -190,6 +186,14 @@ The Thesis Abstract is written here (and usually kept to just this page). The pa
 Further thanks goes to Viviane Tanner and Martina Föhn for their individual support on this thesis.
 
 \end{acknowledgements}
+
+\end{abstract}
+
+%----------------------------------------------------------------------------------------
+%	ACKNOWLEDGEMENTS
+%----------------------------------------------------------------------------------------
+
+
 
 %----------------------------------------------------------------------------------------
 %	LIST OF CONTENTS/FIGURES/TABLES PAGES
@@ -221,6 +225,8 @@ Further thanks goes to Viviane Tanner and Martina Föhn for their individual sup
 \textbf{TP} & \textbf{T}est \textbf{P}oint\\
 \textbf{k-NN} & \textbf{K}-\textbf{N}earest \textbf{N}eighbor\\
 \textbf{NLR} & \textbf{N}on-\textbf{L}inear \textbf{R}egression\\
+\textbf{CDF} & \textbf{C}umulative \textbf{D}istribution \textbf{F}unction\\
+\textbf{STD} & \textbf{S}tandard \textbf{D}ev\textbf{i}ation\\
 
 \end{abbreviations}
 
@@ -241,17 +247,17 @@ Further thanks goes to Viviane Tanner and Martina Föhn for their individual sup
 %	SYMBOLS
 %----------------------------------------------------------------------------------------
 
-\begin{symbols}{lll} % Include a list of Symbols (a three column table)
+%\begin{symbols}{lll} % Include a list of Symbols (a three column table)
 
-$a$ & distance & \si{\meter} \\
-$P$ & power & \si{\watt} (\si{\joule\per\second}) \\
+%$a$ & distance & \si{\meter} \\
+%$P$ & power & \si{\watt} (\si{\joule\per\second}) \\
 %Symbol & Name & Unit \\
 
-\addlinespace % Gap to separate the Roman symbols from the Greek
+%\addlinespace % Gap to separate the Roman symbols from the Greek
 
-$\omega$ & angular frequency & \si{\radian} \\
+%$\omega$ & angular frequency & \si{\radian} \\
 
-\end{symbols}
+%\end{symbols}
 
 %----------------------------------------------------------------------------------------
 %	DEDICATION
