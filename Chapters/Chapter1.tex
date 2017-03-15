@@ -15,11 +15,9 @@
 
 %----------------------------------------------------------------------------------------
 
-The main focus of this thesis is indoor localization of mobile devices especially smartphones.
+Today's ubiquity of mobile computing has increased the demand for mobile devices to be aware of their location. Indoor location awareness is fundamental for many possible applications such as pedestrian navigation and location based marketing in large building complexes (e.g. universities, airports, hospitals).
 
-With today's ubiquity of mobile computing, it has become evermore important for these devices to be aware of their location. Location awareness is fundamental for many possible applications such as pedestrian navigation and location based marketing in large building complexes (e.g. universities, airports, hospitals) or audio-guides for museums.
-
-In contrast to outdoor localization, where we have GPS and other established solutions, indoor localization still remains challenging. Some of the reasons for this include the inability of the GPS signal to penetrate into the building and the effects of non-line-of-sight and multipath propagation on radio waves deteriorating the signal to be less accurate for localization\cite{JoseMaster,multipathEffects}. In addition to these challenges indoor location based applications usually require higher accuracy than those outdoors; An error of four meters is acceptable for street navigation but not for a museum guide.
+In contrast to outdoor localization, where the Global Positioning System (GPS) is the most attractive and effective technology to perform object localization, there exists no established solution for indoor localization. GPS can't be applied in indoor scenarios due to the inability of GPS signal to penetrate in-building materials such  as walls. Moreover, radio localization approaches in indoor environments are affected by non-line-of-sight (NLOS) and multi-path  propagation. These effects deteriorate the signal to be less accurate for localization\cite{JoseMaster,multipathEffects}. In addition to these challenges indoor location based applications usually require higher accuracy than those outdoors; An error of four meters is acceptable for street navigation but not for a museum guide.
 
 \section{Motivation}
 
@@ -27,24 +25,22 @@ Indoor localization has been an active research field in the last few years with
 
 Fingerprinting is a common range-free method, where known radio parameters are mapped to a location. Later this map is used to determine the devices location based on the current radio parameters. Fingerprinting can achieve good accuracy but creating the map is very labor intensive\cite{FineGrainedIndoorTracking}.
 
-Range-based methods use the radio parameters to try to approximate the distance between the mobile device (Mobile Node) and the signal emitters (Anchor Nodes). This process is called ranging. Trilateration is then performed on these distances to determine the position of the MN. The ranging process is prone to errors caused by NLOS and multipath propagation.\cite{FineGrainedIndoorTracking}.
+Range-based methods use the radio parameters to try to approximate the distance between the mobile device (Mobile Node) and the signal emitters (Anchor Nodes). This process is called ranging. Trilateration is then performed on these distances to determine the position of the MN. The ranging process is prone to errors caused by NLOS and multi-path propagation.\cite{FineGrainedIndoorTracking}.
 
 %----------------------------------------------------------------------------------------
 \section{Overview and Contributions}
 
-In this work I propose a localization system which combines the range-based and fingerprinting approach, using fingerprinting to improve the range-based approach.
+In this work we propose a localization system which combines range-based and fingerprinting approaches by using fingerprinting to improve the range-based approach.
 
-The range-based approach is extended by a room recognition system based on fingerprinting with WiFi and magnetic field data. The information provided by the room recognition is used to assign weights to the ranges based on the devices current room and so improve the trilateration and improve the accuracy of the range-based approach.
+The range-based localization method is complemented by a room recognition technique based on WiFi received signal strength (RSS) and magnetic field readings. The information provided by the room recognition is used to define a weighting model, which assign weights to the ranges in the trilateration algorithm.
 
-The proposed localization system is implemented in a test bed and the room recognition and weighting method are evaluated.
+The proposed localization system is implemented and tested in a complex indoor scenario.
 
-My main findings are summarized as follows:
+The main contributions are summarized as follows:
 \begin{itemize}
-\item The proposed room recognition method is able to achieve very high accuracies even with only a small number of training samples.
-\item The inclusion of magnetic field data significantly improves the accuracy of the room recognition.
-\item Defining trilateration weights based on the room recognition increases the localization accuracy. The results are, however, not significantly better than existing simpler weighting methods.
+\item Simple, easy to train room recognition method based on fingerprinting and utilizing magnetic field and RSS information.
+\item A novel weighting method for range based trilateration which estimates the ranging error based on the information provided by the room recognition.
+\item Combining the two above mentioned methods to create a improved indoor location system.
 \end{itemize}
-
-\section{Structure of this Work}
 
 In the remainder of this work, and the theoretical background is reviewed in chapter \ref{Chapter2}. The proposed localization system is introduced in chapter \ref{Chapter3} and the room recognition and weighting are explained in detail. Chapters \ref{Chapter4} and \ref{Chapter5} deal with the test bed implementation used for the evaluation and the evaluation results respectively. Final chapter \ref{Chapter6} summarizes the work and concludes the evaluation results.
