@@ -30,6 +30,7 @@ Another question to be answered is what kind of fingerprinting map yields the hi
 The support vector machine was chosen as the classifier because it is, compared to other common classifiers like k-NN , better suited for this kind of problem. It has no problems with outliers in the training data; It only chooses the most significant samples as support vectors. Also it performs well with a small amount of samples. k-NN on the other hand is very susceptible to outliers and generally needs more samples to offer good results.
 
 \subsection{Room recognition based weighting}
+\label{WeightingModelDefinition}
 Supposed that the ranging error is mainly caused by obstructions to the signal (walls, wires etc.). This would mean that for any two samples inside one room the ranging error should be roughly the same. Therefore it should be possible to estimate the ranging error of a unknown sample by calculating the average error of some known training samples located in the same room.
 
 The proposed weighting method defines the weights for each room as inversely proportional to the average ranging error for each anchor node. This results is a separate set of weights for each room. The room recognition is used to decide which set of weights to use.

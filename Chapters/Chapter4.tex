@@ -11,9 +11,9 @@ The test bed consists of multiple anchor nodes, a mobile node and a computer.
 
 The ANs are commercial WiFi access pints, which are placed in the area of interest and constantly broadcast a beacon signal.
 
-The MN, an android smartphone, is used to collect samples form different location in the area of interest. 
+The MN is an android smartphone. It is used to collect samples form different locations in the area of interest.
 
-The collected samples are transferred to the computer where the calculations and algorithms for training, testing and evaluating the system can be executed.
+The samples collected by the MN are transferred to a computer. The computer is responsible for all the computations. It executes all the algorithms for the room recognition, ranging, weighting and the trilateration.
 
 \begin{figure}[ht]
 \centering
@@ -23,18 +23,18 @@ The collected samples are transferred to the computer where the calculations and
 \label{fig:localizationSystemOverview}
 \end{figure}
 
-This test bed implementation splits the system into an online (collecting samples) and offline (calculations on the computer) part. This way it is possible to try out and empirically compare different configurations of the localisation system under the exact same conditions.
+In our test bed implementation the smartphone is only used to collect the samples. On the computer these samples are then used as training and evaluation points for the localization system. This way it is possible to try out and empirically compare different parameters of the system under the exact same conditions.
 
 The set-up of this test bed comprises both hardware and software specific configurations for each component. The remainder of this chapter details these configurations.
 
 \section{Hardware Set-up}
 
-This set-up requires three different kinds of machines. One for the AN, another for the MN and a computer. There are no special requirements for the computer as long as it is able to execute Java code.
+This set-up requires three different kinds of devices. One for the AN, another for the MN and a computer. There are no special requirements for the computer as long as it is able to execute Java code.
 
 For the AN and MN the following hardware was employed:
 
 \paragraph{Anchor Nodes}
-The commercial Wi-Fi access points used as anchor nodes are of the model D-Link D-635 and D-2553. They are set-up with a beacon period of 100ms and broadcast on the 2.4 GHz frequency band.
+The commercial WiFi access points used as anchor nodes are of the model D-Link D-635 and D-2553. They are set-up with a beacon period of 100ms and broadcast on the 2.4 GHz frequency band.
 
 \paragraph{Mobile Node}
 
@@ -53,30 +53,41 @@ The WiFi module and the magnetometer are used for the sample collection. The mag
 
 \section{Software Set-up}
 
-\subsection{Sample collection}
+\subsection{Mobile Node}
 
-The samples are collected on the smartphone using a small application written for this purpose.
+The mobile node runs an android application which collects RSSI and magnetic field data.
 
-The samples consist of:
+To collect one sample the application takes the average of five RSSI and magnetometer measurements, each spaced 2 seconds apart. The samples are then saved to a \code{.csv} file on the smartphones internal storage so they can later be transferred to the computer.
+
+Each sample consist of:
 \begin{itemize}
-\item \textbf{A label} eather indicating the room or the exact location where the sample was taken.
+\item \textbf{A label} aether indicating the room or the exact location where the sample was taken.
 \item \textbf{A set of RSSI values}, one for each AN.
 \item \textbf{The magnetic field strength} in \(\mu\)-Tesla along the devices x,y and z axis.
 \end{itemize}
 
-On android the WiFi module can not be accessed directly. Wi-Fi scans have to be initiated through the \code{AndroidAPI} and it only supports full scans\cite{brouwers2014incremental}. Full scans take longer so it is only possible to take one RSSI measurement every 1.5 seconds.
+On android the WiFi module can not be accessed directly. WiFi scans have to be initiated through the \code{AndroidAPI} and it only supports full scans\cite{brouwers2014incremental}. Full scans take longer so it is only possible to take one RSSI measurement every 1.5 seconds.
 
-Due to the low sampling rate it is not practical to apply filters to remove noise from the $RSSI$. It is also not possible to access channel state information which could be used to mitigate some of the multipath effects.
+Due to the low sampling rate it is not practical to apply filters to remove noise from the $RSSI$. It is also not possible to access channel state information which could be used to mitigate some of the multi path effects.
 
-To collect one sample the application takes the average of five RSSI and magnetometer measurements, each spaced 2 seconds apart. The samples are then saved to a \code{.csv} file on the smartphones internal storage and later transferred to the computer.
+\subsection{Computer}
 
-\subsection{Training and testing of the system}
+On the computer a few different programs are used to implement the localization system:
+\begin{itemize}
+\item \textbf{WEKA 3.6} is used for the room recognition classifier.
 
-Training, testing and evaluation of the localization system is done offline on a computer using Matlab, WEKA and a Java program for the trilateration.
+\item \textbf{Matlab}'s function fit tool is used to train the ranging model.
 
-First the collected samples are grouped into training and testing datasets and the ranging, room recognition and weighting models are generated from the training data.
+\item A \textbf{Spreadsheet} program is used to manually calculate the weighting model.
 
-Then the trilateration-tool reads the testing data, applies the models and solves the trilateration problem. It prints out the predicted position and the positioning error for each sample in the testing set.
+
+\item The \textbf{trilateration tool} is responsible for the application of the ranging and weighting models and performs the trilateration. It is a small Java application written for this test bed implementation.
+
+\end{itemize}
+
+The implementation of the room recognition system is split into two phases; The \textbf{offline phase} where the  room recognition, ranging and weighting model are generated. And the \textbf{online phase} where the models are used to predict the location of unknown samples.
+ 
+Figure \ref{fig:offlineImplementation} gives an overview of this process. In the following the two phases are explained in detail.
 
 \begin{figure}[ht]
 \centering
@@ -86,22 +97,26 @@ Then the trilateration-tool reads the testing data, applies the models and solve
 \label{fig:offlineImplementation}
 \end{figure}
 
-\subsubsection*{Room Recognition Model}
-The SVM for the room recognition is trained in WEKA. It generates a multiclass SVM model from the training data set and may use grid search for the parameter selection. The training data set consists of samples containing RSSI \((RSSI_{i})\) and magnetic field \((B_{xyz})\) values labelled with the room number \((R\#)\).
+\subsubsection{Offline Phase}
 
-\subsubsection*{Ranging Model}
+\paragraph{Room Recognition Model}
+The SVM for the room recognition is trained in WEKA. It generates a multiclass SVM model from the training data set and may use grid search for the parameter selection. The training data set consists of samples containing RSSI \((RSSI_{i})\) and magnetic field \((B_{xyz})\) values labeled with the room number \((R\#)\).
+
+\paragraph{Ranging Model}
 For the ranging model the \(\alpha, \beta\) parameters from equation \ref{eqn:non-linear path loss model} need to be determined for each AN. This is done by fitting the equation to the testing data in \emph{Matlab}. The testing data set is a list of RSSI values and the corresponding distance \((D_{i})\) to the AN.
 
-The resulting non-linear regression model is inaccurate with high RSSI values (samples verry close to the AN). To account for that the distances for these high values are set by hand.
+The resulting non-linear regression model is inaccurate with high RSSI values (samples very close to the AN). To account for that the distances for these high values are set by hand.
 
-\subsubsection*{Weighting Model}
+\paragraph{Weighting Model}
 
 The \emph{Room Weights} are calculated by hand based on equation \ref{eqn: Room Weights} in a spreadsheet program and imported into the trilateration tool.
 
 The \emph{Distance Weights} are calculated by the trilateration tool during run time based on the equation \ref{eqn: distance weights}.
 
-\subsubsection*{Testing}
+\subsubsection{Online Phase}
 
-The testing dataset contains samples with RSSI and magnetic field values and the position \((X,Y)\) where the sample was collected.
+The online dataset contains samples with RSSI and magnetic field values.
 
-In a first step WEKA is used to predict the room number. The result is handed to the trilateration tool, which applies the ranging and weighting models to determine the predicted distances \((d_{i})\) and clculate the weights \((w_{i})\). It then solves the trilateration problem (equation \ref{eqn: trilateration as optimization problem}) using the Levenberg–Marquardt optimizer from the \code{Apache Commons Math} library. It outputs the predicted position \((x,y)\) and the localization error to a \code{.csv} file.
+In a first step WEKA is used to predict the room number. The result is handed to the trilateration tool, which applies the ranging and weighting models to determine the predicted distances \((d_{i})\) and calculate the weights \((w_{i})\). It then solves the trilateration problem (equation \ref{eqn: trilateration as optimization problem}) using the Levenberg–Marquardt optimizer from the \code{Apache Commons Math} library. It outputs the predicted position \((x,y)\) to a \code{.csv} file.
+
+To evaluate the system, the online dataset can also contain the actual position \((X,Y)\) where the sample was collected. In this case the trilateration tool will also output the localization error.
