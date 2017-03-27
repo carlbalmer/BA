@@ -7,7 +7,7 @@
 
 Indoor localization remains a challenging problem in computer science.
 
-In this thesis I combine the two most common localization approaches into one system; Adding a room recognition system to a range based approach to improve the trilateration weights and the localisation accuracy.
+In this thesis we combine the two most common localization approaches into one system; Adding a room recognition system to a range based approach to improve the trilateration weights and the localization accuracy.
 
 I propose a room recognition system based on fingerprinting with RSSI and magnetic field data and a new weighting method for range based localization by defining a set of weights for each room.
 
@@ -20,14 +20,14 @@ Room recognition based on RSSI and magnetic field data is able to achieve a high
 
 The inclusion of magnetic field data \emph{generally improves the room recognition accuracy by 10\%}. However this improvement may be influenced by large temporary disruptions in the magnetic field.
 
-The results indicate that there is no benefit of having a training data set with more samples at the borders. The best results, in comparison to the numbers of samples, are achieved with a \emph{evenly distributed set of samples}. 
+The results of our work indicate that there is no benefit of having a training data set with more samples at the borders. The best results, in comparison to the numbers of samples, are achieved with a \emph{evenly distributed set of samples}. 
  
 For the SVM configuration the polynomial kernel seems to be the better suited kernel function.
 
 
 \paragraph{Concerning the weighting:} 
 
-The proposed weighting method does work, and improve the accuracy compared to \emph{OLS}. However the improvements are not very large. This can be explained by the fact that the NLR-model used for ranging already takes into account some environmental parameters.
+The proposed weighting method does improve the accuracy compared to \emph{OLS}. However the improvements are not very large. This can be explained by the fact that the NLR-model used for ranging already takes into account the environmental parameters $\alpha$ and $\beta$.
 
 Compared to already existing simpler \emph{Distance Weight} the proposed method performs almost the same. Considering the added complexity and effort in collecting the room recognition samples the proposed weighting method is not practical. It does make more sense to use the \emph{Distance Weights} instead.
 
@@ -37,4 +37,4 @@ Compared to already existing simpler \emph{Distance Weight} the proposed method 
 
 Although the room recognition was not able to significantly improve the weighting, there are many other possible applications for a simple and effective room recognition system. As an example it could be included into a particle filter to enhance tracking performance for indoor tracking applications.
 
-It would also be interesting to explore other ways to include magnetic filed data into indoor localization systems.
+Also to use the room recognition system in real-time, it would be necessary to have a system that takes into account the orientation of the device. The magnetometer readings are dependent on the devices location. So in order to use the device in any orientation, the measurements would need to be normalized to a reference frame. This could potentially be done by keeping track of the devices orientation using the internal sensors and adjusting the magnetometer measurements accordingly.

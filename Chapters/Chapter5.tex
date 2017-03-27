@@ -30,7 +30,7 @@ The samples were collected with the smartphone held approximatively one meter ab
 The collected samples were grouped into the following data sets:
 
 \begin{itemize}
-\item \textbf{Fingerprinting data} only labelled with the room number
+\item \textbf{Fingerprinting data} only labeled with the room number
 	\begin{itemize}
 	\item Grid (223 samples)
 
@@ -39,15 +39,15 @@ The collected samples were grouped into the following data sets:
 	
 	A set of \textbf{unevenly distributed} samples. The sample density is very high at the borders (walls and doors between rooms) with about one sample taken every 0.5m but only a few samples from the center of each room.
 	\end{itemize}
- \item \textbf{XY data} labelled with the exact coordinates
+ \item \textbf{XY data} labeled with the exact coordinates
  
- A set of 44 \textbf{evenly distributed} samples labelled with \((X,Y)\)-coordinates.
+ A set of 44 \textbf{evenly distributed} samples labeled with \((X,Y)\)-coordinates.
 \end{itemize}
 
 \section{Room Recognition}
 \label{EvaluationRoomRecognition}
 
-The purpose of this evaluation is to check the hypothesis that the magnetic field data improves the room recognition accuracy and find out which kind of training data (evenly distributed or more samples at the borders) achieves the best results.
+The purpose of this evaluation is to check the hypothesis that the magnetic field data improves the room recognition accuracy. Additionally we want to find out which kind of training data (evenly distributed or more samples at the borders) achieves the best results.
 
 \paragraph{To check if the magnetic field data has a significant impact on the performance of the room recognition} 10-fold cross validation is performed on the evenly distributed \emph{Grid} data set both with and without using magnetic field data. The resulting accuracies are compared. This experiment is repeated with different SVM parameters to see if the parameters have an impact on the result. 
 
@@ -59,7 +59,7 @@ The SVM parameters are either the standard pre-sets or selected with cross valid
 
 Table \ref{tab:RoomRecognitionMagneticField} shows a large difference between the performance with and without magnetic field data when using cross validation. With WEKA's pre-set SVM parameters (poly-kernel, $c=1,e=1$) the improvement is very large with almost 20\%. When using the optimal parameters (determined by grid search for each case separately) the difference drops to a still significant 10\%. This drop is due to the fact that the pre-set parameters seem to be better suited to the case with magnetic field data. A comparison between the two cases using not optimal parameters is therefore unfair.
 
-Cross validation can sometimes be a little biased. So the impact of magnetic field data was also compared by training with the \emph{Grid} data set and testing against the \emph{XY} data set, mincing a real-world use case of the room recognition. Surprisingly this only resulted in a 2.3\% improvement.
+Cross validation can sometimes be a little biased. So the impact of magnetic field data was also compared by training with the \emph{Grid} data set and testing against the \emph{XY} data set, mimicking a real-world use case of the room recognition. Surprisingly this only resulted in a 2.3\% improvement.
 
 
 
@@ -67,7 +67,7 @@ Cross validation can sometimes be a little biased. So the impact of magnetic fie
 \centering
 \begin{tabular}{l l l l}
 \toprule
-\textbf{Evaluation Type}&\textbf{with }\boldmath$B_{xyz}$&\textbf{without }\boldmath$B_{xyz}$&\textbf{Difference} \\
+\textbf{Evaluation Type}&\textbf{with }\boldmath$B_{xyz}$&\textbf{without }\boldmath$B_{xyz}$&\textbf{Improvement} \\
 \midrule
 CV (pre-set)&90.1\%&70.4\%&19.7\%\\
 CV (optimized)&93.3\%&83.0\%&10.3\%\\
@@ -90,7 +90,7 @@ When room \#3 is excluded from the test set we get the expected 10\% improvement
 \centering
 \begin{tabular}{l l l l}
 \toprule
-\textbf{Room Number}&\textbf{with }\boldmath$B_{xyz}$&\textbf{without }\boldmath$B_{xyz}$&\textbf{Difference} \\
+\textbf{Room Number}&\textbf{with }\boldmath$B_{xyz}$&\textbf{without }\boldmath$B_{xyz}$&\textbf{Improvement} \\
 \midrule
 \#1&100.00\%&100.00\%&-\\
 \#2&100.00\%&100.00\%&-\\
@@ -102,7 +102,7 @@ When room \#3 is excluded from the test set we get the expected 10\% improvement
 \#8&83.30\%&66.70\%&16.60\%\\
 \bottomrule
 \end{tabular}
-\caption[Room Recognition - Accuracy per room]{Accuracy of the room recognition for each room (\emph{XY} test set)}
+\caption[Room Recognition - Accuracy per room]{Accuracy of the room recognition for each room (\emph{XY} test set, poly-kernel, optimized parameters)}
 \label{tab:RoomRecognitionPerRoom}
 \end{table}
 
@@ -213,7 +213,7 @@ The results also show that combining the \emph{Room} and \emph{Distance Weights}
 
 The comparison between the performance of the weighting in a best case scenario and real world case, shows that there is indeed a error introduced by the room recognition. But the CDF (figure: \ref{fig:WeightingCDFrealRoom}) shows that this error is overall very small and mainly due to a few samples with a large error, which increase the maximum error.
 
-However when taking into account this error, the real world performance of the proposed weighting method is almost the same as the existing simpler \emph{Distance Weights}. This is apparent in figure \ref{fig:WeightingCDFrealDistance}. The mean error is only a few centimetres lower (0.07m) and the maximum error even higher than with the \emph{Distance Weights}.
+However when taking into account this error, the real world performance of the proposed weighting method is almost the same as the existing simpler \emph{Distance Weights}. This is apparent in figure \ref{fig:WeightingCDFrealDistance}. The mean error is only a few centimeters lower (0.07m) and the maximum error even higher than with the \emph{Distance Weights}.
 
 \begin{figure}[bh]
 \centering
