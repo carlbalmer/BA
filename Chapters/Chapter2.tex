@@ -4,16 +4,16 @@
 
 \label{Chapter2} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
-In this section two of the most common indoor localization approaches - fingerprinting and range-based are reviewed. This knowledge is required to fully understand our implementation of these mechanisms. Additionally, we also include some information specific to our room recognition approach. 
+In this section two of the most common indoor localization approaches - fingerprinting and range-based are reviewed. This knowledge is required to fully understand our implementation of these mechanisms. Additionally, we also include some information specific to our room recognition approach.
 
-This chapter is organized as follows: First the range-based localization approach is introduced; the important aspects of the observation parameters (RSSI, signal propagation) and each phase of the process (ranging, weighting, trilateration) are covered in detail. Second the fingerprinting based approach is explained. Besides an overview of the standard approach the focus lies on the information specific to our room recognition approach; earth's magnetic field and SVM classification.
+This chapter is organized as follows: First the range-based localization approach is introduced; the important aspects of the observation parameters (RSSI, signal propagation) and each phase of the process (ranging, weighting, trilateration) are covered in detail. Second the fingerprinting based approach is explained. Besides an overview of the standard approach the focus lies on the information specific to our room recognition approach; earth's magnetic field and support vector machine (SVM) classification.
 
 \section{Range-Based Localization}
 \label{therory:range-based}
 
 A range based localization system consists of two main components \citep{surveyIndoorTechniques}:
 
-\textbf{A number of Anchor Nodes (ANs)} which are placed at known locations and constantly transmit a radio signal.
+\textbf{Several Anchor Nodes (ANs)} which are placed at known locations and constantly transmit a radio signal.
 
 \textbf{A mobile node (MN)}, in this case a smartphone, whose location is unknown and needs to be determined.
 
@@ -33,17 +33,17 @@ In the following subsections the ranging, trilateration and weighting steps are 
 
 \subsection{RSSI and signal propagation}
 
-The received signal strength indicator describes the signal power level received by the receive radio. The measurement is given in arbitrary discrete units with higher numbers relating to a stronger signal\citep{RSSIwikipedia}.
+The received signal strength indicator describes the signal power level received by the receive radio. The measurement is given in arbitrary discrete units with higher numbers relating to a stronger signal \citep{RSSIwikipedia}.
 
 In an open space without any obstacles the RSSI mainly depends on the propagation distance, but indoors several other factors become important. These are non line of sight (NLOS) and multi-path propagation.
 
-NLOS occurs when the signals path is obstructed by physical objects. The signal has to pass through these objects and therefore the RSSI is lower compared to LOS, where there are no obstacles\cite{JoseMaster}.
+NLOS occurs when the signals path is obstructed by physical objects. The signal must pass through these objects and therefore the RSSI is lower compared to LOS, where there are no obstacles \cite{JoseMaster}.
 
-Multi-path propagation is caused when the signal is reflected from physical objects and arrives at the receiver multiple times with different signal strength. This causes inaccuracy and fluctuations in the measured RSSI as all these signals are blended together\cite{multipathEffects}.
+Multi-path propagation is caused when the signal is reflected from physical objects and arrives at the receiver multiple times with different signal strength. This causes inaccuracy and fluctuations in the measured RSSI as all these signals are blended together \cite{multipathEffects}.
 
-Both of these affects are very common in indoor environments, caused by the walls, people, furniture and other building materials. Furthermore the RSSI values are discrete and not fine grained what causes additional inaccuracy. This makes range-based localization based on RSSI challenging and limits its accuracy.
+Both effects are very common in indoor environments, caused by the walls, people, furniture and other building materials. Furthermore, the RSSI values are discrete and not fine grained what causes additional inaccuracy. This makes range-based localization based on RSSI challenging and limits its accuracy.
 
-There are other ways to assess the signal strength, such as channel state information, which is more fine grained and can mitigate multi-path effects, but they are not available on most mobile devices\cite{JoseMaster,FineGrainedIndoorTracking}.
+There are other ways to assess the signal strength, such as channel state information, which is more fine-grained and can mitigate multi-path effects, but they are not available on most mobile devices \cite{JoseMaster,FineGrainedIndoorTracking}.
 
 \subsection{Radio-based ranging process}
 \label{Ranging}
@@ -58,19 +58,19 @@ The model needs to be trained for each AN individually by determining the values
 
 \subsection{Trilateration}
 
-Trilateration is the process of determining a absolute or relative location based on the distance to known locations. In contrast to triangulation it relies on distances instead of angles.
+Trilateration is the process of determining an absolute or relative location based on the distance to known locations. In contrast to triangulation it relies on distances instead of angles.
 
-In the context of localization the goal is to determine the NM's location \(\left ( x,y \right )\) based on the the locations of the ANs \(\left ( \tilde{x_{i}},\tilde{y_{i}} \right )\) and the distance estimations \(d_{i}\) obtained from the path loss model.
+In the context of localization the goal is to determine the NM's location \(\left ( x,y \right )\) based on the locations of the ANs \(\left ( \tilde{x_{i}},\tilde{y_{i}} \right )\) and the distance estimations \(d_{i}\) obtained from the path loss model.
 
 The actual distance \(D_{i}\) from the MN to the \(i\)-th AN can be expressed as follows:
 \begin{equation}
 D_{i} = \sqrt{\left ( \tilde{x_{i}}-x \right )^{2}+\left ( \tilde{y_{i}}-y \right )^{2}}
 \label{eqn: distance MN to AN_{i}}
 \end{equation}
-Under the assumption that \(d_{i}=D_{i}\)  this leads to the following equation system:
+Under the assumption that \(d_{i}=D_{i}\) this leads to the following equation system:
 \begin{equation}
 \begin{pmatrix}
-d_{1}\\ 
+d_{1}\\
 d_{2}\\
 \vdots\\
 d_{n}
@@ -90,15 +90,15 @@ But \(d_{i}\) is only an estimation so there is no exact solution of the above s
 argmin_{x,y}\sum_{i=1}^{n}w_{i}\left ( d_{i} - \sqrt{\left ( \tilde{x_{i}}-x \right )^{2}+\left ( \tilde{y_{i}}-y \right )^{2}} \right )^{2}
 \label{eqn: trilateration as optimization problem}
 \end{equation}
-This can be done using a optimization algorithm like "Levenberg–Marquardt" or "Gauss-Newton".
+This can be done using an optimization algorithm like "Levenberg–Marquardt" or "Gauss-Newton".
 
 \subsection{Range weighting process}
 
 The optimization problem in equation \ref{eqn: trilateration as optimization problem} also defines a set of weights $w_i$ corresponding to each distance estimation $d_i$. In the context of trilateration these weights represent how accurate each distance estimation is.
 
-The ranging models accuracy can vary greatly. By applying a large weight to the more accurate estimations and a small weight to the inaccurate ones it should, in theory, be possible to correct for the ranging error and improve the localization.
+The ranging model's accuracy can vary greatly. By applying a large weight to the more accurate estimations and a small weight to the inaccurate ones it should, in theory, be possible to correct for the ranging error and improve the localization.
 
-In practice the problem is, that the ranging error is not known. A weighting method is needed that estimates the ranging error.
+In practice the problem is that the ranging error is not known. A weighting method is needed that estimates the ranging error.
 
 Previous work at the CDS group \cite{FineGrainedIndoorTracking} used the assumption that the ranging error is larger with increasing distance to the anchor node. So the weights were defined as inversely proportional to the estimated distances:
 
@@ -111,13 +111,13 @@ In the remainder of this work this weighting method will be referred to as \emph
 
 \section{Fingerprinting-based localization}
 
-Fingerprinting is a common method for localization based on RSSI\cite{chapre2013RSSI}. It consists of two main phases:
+Fingerprinting is a common method for localization based on RSSI \cite{chapre2013RSSI}. It consists of two main phases:
 
-During the \textbf{offline/training phase}, a survey of the area of interest is performed. A map of reference points (RP) is created. Each reference point represents a known location and contains the RSSI for each AN. 
+During the \textbf{offline/training phase}, a survey of the area of interest is performed. A map of reference points (RP) is created. Each reference point represents a known location and contains the RSSI for each AN.
 
-Then during the \textbf{online phase}, a location positioning technique uses the currently observed signal strengths and previously collected information to figure out an estimated location. The positioning technique can employ different machine learning schemes such as k-nearest neighbor regression or support vector machines\cite{JoseMaster,surveyIndoorTechniques}. 
+Then during the \textbf{online phase}, a location positioning technique uses the currently observed signal strengths and previously collected information to figure out an estimated location. The positioning technique can employ different machine learning schemes such as k-nearest neighbor regression or support vector machines \cite{JoseMaster,surveyIndoorTechniques}.
 
-The accuracy of this method mainly depends on the density of the RP-map. The higher the density of RPs the better the accuracy. Generally achieving a satisfying level of accuracy, requires a lot of RPs. Other factors are the number of attributes in each RP and the variability of the observation parameters\cite{Li2012feasableMagnetic}.
+The accuracy of this method mainly depends on the density of the RP-map. The higher the density of RPs the better the accuracy. Generally achieving a satisfying level of accuracy requires a lot of RPs. Other factors are the number of attributes in each RP and the variability of the observation parameters \cite{Li2012feasableMagnetic}.
 
 More attributes per RP, an attribute being a data value like a RSSI or a magnetic field measurement, gives the algorithm more information to work with and so increased the accuracy\cite{Li2012feasableMagnetic}. This effect is subject to diminishing returns\cite{brouwers2014incremental}. A high variability in the observation parameters depending on location is also beneficial.
 
@@ -125,11 +125,11 @@ This approach is able to achieve good accuracies in indoor environments. The pro
 
 \subsection{Earth's magnetic field in indoor environments}
 
-Earth's magnetic field, is the magnetic field that extends from the Earth's interior out into space. It is similar to a magnetic dipole with field-lines pointing towards the magnetic north \citep{EarthMagnetwikipedia}. This feature has already been used for outdoor localization, mainly as a compass to determine the devices heading in PDR systems.
+Earth's magnetic field is the magnetic field that extends from the Earth's interior out into space. It is similar to a magnetic dipole with field-lines pointing towards the magnetic north \citep{EarthMagnetwikipedia}. This feature has already been used for outdoor localization, mainly as a compass to determine the devices heading in PDR systems.
 
-However, in indoor environments earth's magnetic field is disrupted. The presence of ferrous structures in the building materials, electrical devices, cables and tubes cause anomalies in the magnetic field. These anomalies make accurate heading determination difficult\citep{afzal2010assessment}.
+However, in indoor environments earth's magnetic field is disrupted. The presence of ferrous structures in the building materials, electrical devices, cables and tubes cause anomalies in the magnetic field. These anomalies make accurate heading determination difficult \citep{afzal2010assessment}.
 
-But previous research suggests that they can be used in a fingerprinting approach to determine a devices location. The idea is that the presence of a magnetic field anomaly can be linked to a specific location. The research shows that the magnetic field anomalies are mostly stable over time and have sufficient local variability. Therefore they should be applicable for use in localization\cite{haverinen2009global,angermann2012CharacterizationMagnetic,Li2012feasableMagnetic}.
+But previous research suggests that they can be used in a fingerprinting approach to determine a devices location. The idea is that the presence of a magnetic field anomaly can be linked to a specific location. The research shows that the magnetic field anomalies are mostly stable over time and have sufficient local variability. Therefore, they should be applicable for use in localization \cite{haverinen2009global,angermann2012CharacterizationMagnetic,Li2012feasableMagnetic}.
 
 \subsection{Support Vector Machine}
 \label{theory:SVM}
@@ -141,7 +141,7 @@ The SVM maps the samples into \(n\)-dimensional space. It then tries to fit a hy
 
 To classify a new unknown sample the SVM determines on which side of the hyperplane it lies and assigns the according label.
 
-To fit the hyperplane the SVM solves the following optimization problem\cite{chang2011libsvm}:
+To fit the hyperplane the SVM solves the following optimization problem \cite{chang2011libsvm}:
 \begin{equation}
 \begin{split}
 \min_{\omega , b ,\xi}\;\; & \frac{1}{2}\omega^{T}\omega +C\sum_{i=1}^{l}\xi_{i}\\
@@ -150,7 +150,7 @@ To fit the hyperplane the SVM solves the following optimization problem\cite{cha
 \end{split}
 \end{equation}
 
-There may be outlines in the data. This means that a hyperplane that separates all samples correctly may not be the best classifier. To account for this, a cost is paid if a sample violates the error term \(y_{i}\left ( w^{T}\phi \left ( x_{i} \right )+b \right )\geq 1\), increasing the objective function by \(C \xi_{i}\). The $C$ parameter defines the trade-off between the simplicity of the decision surface (\emph{hyperplane}) and misclassification of training samples. For large values of $C$ the optimization will chose a hyperplane with a smaller margin and more support vectors. Therefore the \emph{hyperplane} will be more complex, as it tries to classify all samples correctly. Conversely, a small value of $C$ will cause the optimizer to look for a larger-margin separating hyperplane, even if that hyperplane misclassifies some samples\cite{crossValidatedSVMC}.
+There may be outlines in the data. This means that a hyperplane that separates all samples correctly may not be the best classifier. To account for this a cost is paid if a sample violates the error term \(y_{i}\left ( w^{T}\phi \left ( x_{i} \right )+b \right )\geq 1\), increasing the objective function by \(C \xi_{i}\). The $C$ parameter defines the trade-off between the simplicity of the decision surface (\emph{hyperplane}) and misclassification of training samples. For large values of $C$ the optimization will chose a hyperplane with a smaller margin and more support vectors. Therefore the \emph{hyperplane} will be more complex, as it tries to classify all samples correctly. Conversely, a small value of $C$ will cause the optimizer to look for a larger-margin separating hyperplane, even if that hyperplane misclassifies some samples \cite{crossValidatedSVMC}.
 
 \begin{figure}[htp]
 
@@ -160,10 +160,10 @@ There may be outlines in the data. This means that a hyperplane that separates a
 \includegraphics[width=.3\textwidth]{Figures/svm_2.png}\hfill
 \includegraphics[width=.3\textwidth]{Figures/svm_3.png}
 \decoRule
-\caption[SVM kernel trick]{\raggedright(Left) A dataset in, not linearly separable. (Middle)The same dataset transformed with decision boundary. (Right) The nonlinear decision boundary.}
+\caption[SVM kernel trick]{\raggedright(Left) A dataset in feature space, not linearly separable. (Middle)The same dataset transformed with decision boundary. (Right) The nonlinear decision boundary.}
 
 \end{figure}
 
-But the training data may not be linearly separable. In this case the so called kernel trick can be used. The kernel is a function \(k\left ( x_{i}, x_{j} \right )=\phi \left ( x_{i} \right )\cdot \phi\left ( x_{j} \right )\) which maps the features \(x_{i}\) to a higher dimensional space where they can be separated by a hyperplane. This results in a non linear separation in the original feature space\cite{ErikKimKernelTrick}.
+But the training data may not be linearly separable. In this case the so-called kernel trick can be used. The kernel is a function \(k\left ( x_{i}, x_{j} \right )=\phi \left ( x_{i} \right )\cdot \phi\left ( x_{j} \right )\) which maps the features \(x_{i}\) to a higher dimensional space where they can be separated by a hyperplane. This results in a non-linear separation in the original feature space \cite{ErikKimKernelTrick}.
 
-To perform multi-class classification the "one-against-one" approach can be used. For \(k\) classes \(k\left ( k-1 \right )/2\) classifiers are trained. Each binary classifier is then considered to vote for a class. The sample is then placed in the class with the most votes\cite{chang2011libsvm}.
+To perform multi-class classification the "one-against-one" approach can be used. For \(k\) classes \(k\left ( k-1 \right )/2\) classifiers are trained. Each binary classifier is then considered to vote for a class. The sample is then placed in the class with the most votes \cite{chang2011libsvm}.

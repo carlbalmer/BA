@@ -2,7 +2,7 @@
 
 \label{Chapter3}
 
-In chapter \ref{Chapter2} the two most common indoor localization approachers were introduced. In this chapter a localization system is proposed that combines those approaches. Our proposal uses a fingerprinting based room recognition system to improve the weights for the range-based trilateration.
+In chapter \ref{Chapter2} the two most common indoor localization approaches were introduced. In this chapter a localization system is proposed that combines those approaches. Our proposal uses a fingerprinting based room recognition system to improve the weights for the range-based trilateration.
 
 After giving an overview of the proposed system we will focus on the new components of our system; the room recognition system and room based weighting method. The other components of the system were already covered in chapter \ref{therory:range-based}.
 
@@ -16,24 +16,24 @@ After giving an overview of the proposed system we will focus on the new compone
 \label{fig:proposedApproach}
 \end{figure}
 
-As apparent in the block diagram (Figure \ref{fig:proposedApproach}) the standard range-based approach is not changed but simply extended. Therefore the main focus of this thesis are the two added components; the proposed room recognition system and weighting method. In the remainder of this chapter those components are explained in detail. 
+As apparent in the block diagram (Figure \ref{fig:proposedApproach}) the standard range-based approach is not changed but simply extended. Therefore, the main focus of this thesis are the two added components; the proposed room recognition system and weighting method. In the remainder of this chapter those components are explained in detail.
 
 \subsection{Room Recognition}
 The room recognition system is based on a fingerprinting approach. The fingerprint-map consists of $RSSI$ and magnetic field data ($B_{xyz}$). A multi-class SVM classifier is trained with the fingerprinting map and can then be employed to predict the devices room.
 
-Wile fingerprinting can be labour intensive when used for accurate localization, applying it to the problem of room recognition solves some of this problem. In this case it is not required to measure the exact location of each sample. The samples only need to be labelled with the room. This makes the sample collection a lot faster.
+While fingerprinting can be labor intensive when used for accurate localization, applying it to the problem of room recognition solves some of this problem. In this case, it is not required to measure the exact location of each sample. The samples only need to be labelled with the room. This makes the sample collection a lot faster.
 
 Magnetic field data ($B_{xyz}$) is also included in the fingerprinting map. It is predicted that this will increase the accuracy of the room recognition system as previous work has shown the applicability of  magnetic field data for localization. \emph{This hypothesis needs to be confirmed in the evaluation.}
 
-Another question to be answered is what kind of fingerprinting map yields the highest accuracy; \emph{a equally distributed map or a unequally distributed one with more samples at the borders }(walls and doors between rooms).
+Another question to be answered is what kind of fingerprinting map yields the highest accuracy; \emph{an equally distributed map or a unequally distributed one with more samples at the borders }(walls and doors between rooms).
 
-The support vector machine was chosen as the classifier because it is, compared to other common classifiers like k-NN , better suited for this kind of problem. It has no problems with outliers in the training data; It only chooses the most significant samples as support vectors. Also it performs well with a small amount of samples. k-NN on the other hand is very susceptible to outliers and generally needs more samples to offer good results.
+The support vector machine was chosen as the classifier because it is, compared to other common classifiers like k-NN, better suited for this kind of problem. It has no problems with outliers in the training data; It only chooses the most significant samples as support vectors. Also, it performs well with a small number of samples. k-NN on the other hand is very susceptible to outliers and generally needs more samples to offer good results.
 
 \subsection{Room recognition based weighting}
 \label{WeightingModelDefinition}
-Supposed that the ranging error is mainly caused by obstructions to the signal (walls, wires etc.). This would mean that for any two samples inside one room the ranging error should be roughly the same. Therefore it should be possible to estimate the ranging error of a unknown sample by calculating the average error of some known training samples located in the same room.
+Supposed that the ranging error is mainly caused by obstructions to the signal (walls, wires etc.). This would mean that for any two samples inside one room the ranging error should be roughly the same. Therefore, it should be possible to estimate the ranging error of an unknown sample by calculating the average error of some known training samples located in the same room.
 
-The proposed weighting method defines the weights for each room as inversely proportional to the average ranging error for each anchor node. This results is a separate set of weights for each room. The room recognition is used to decide which set of weights to use.
+The proposed weighting method defines the weights for each room as inversely proportional to the average ranging error for each anchor node. The result is a separate set of weights for each room. The room recognition is used to decide which set of weights to use.
 
 For room $R$ the weight $w_{Ri}$ associated with the distance estimation $d_i$ to anchor node $AN_i$ is calculated based on all the training samples $S_R$ in the room.
 

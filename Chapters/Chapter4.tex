@@ -11,7 +11,7 @@ The test bed consists of multiple anchor nodes, a mobile node and a computer.
 
 The ANs are commercial WiFi access pints, which are placed in the area of interest and constantly broadcast a beacon signal.
 
-The MN is an android smartphone. It is used to collect samples form different locations in the area of interest.
+The MN is an android smartphone. It is used to collect samples from different locations in the area of interest.
 
 The samples collected by the MN are transferred to a computer. The computer is responsible for all the computations. It executes all the algorithms for the room recognition, ranging, weighting and the trilateration.
 
@@ -43,7 +43,7 @@ The mobile node is an android smartphone of the model \emph{One Plus One}. It ha
 \begin{itemize}
 \item \textbf{OS:} Android 5.1
 \item \textbf{Processor:} 2.5GHz Quad-core CPU
-\item \textbf{WiFi module:} Qualcomm WCN3680 802.11ac/FM/BT 4.0 Combo Chip 
+\item \textbf{WiFi module:} Qualcomm WCN3680 802.11ac/FM/BT 4.0 Combo Chip
 \item \textbf{Internal sensors:} accelerometer, magnetometer, gyroscope, proximity, ambient light
 \item \textbf{Memory:} 3 GB RAM
 \end{itemize}
@@ -66,9 +66,9 @@ Each sample consist of:
 \item \textbf{The magnetic field strength} in \(\mu\)-Tesla along the devices x,y and z axis.
 \end{itemize}
 
-On android the WiFi module can not be accessed directly. WiFi scans have to be initiated through the \code{AndroidAPI} and it only supports full scans\cite{brouwers2014incremental}. Full scans take longer so it is only possible to take one RSSI measurement every 1.5 seconds.
+On android the WiFi module cannot be accessed directly. WiFi scans have to be initiated through the \code{AndroidAPI} and it only supports full scans \cite{brouwers2014incremental}. Full scans take longer so it is only possible to take one RSSI measurement every 1.5 seconds.
 
-Due to the low sampling rate it is not practical to apply filters to remove noise from the $RSSI$. It is also not possible to access channel state information which could be used to mitigate some of the multi path effects.
+Due to the low sampling rate, it is not practical to apply filters to remove noise from the $RSSI$. It is also not possible to access channel state information which could be used to mitigate some of the multi path effects.
 
 \subsection{Computer}
 
@@ -86,7 +86,7 @@ On the computer a few different programs are used to implement the localization 
 \end{itemize}
 
 The implementation of the room recognition system is split into two phases; The \textbf{offline phase} where the  room recognition, ranging and weighting model are generated. And the \textbf{online phase} where the models are used to predict the location of unknown samples.
- 
+
 Figure \ref{fig:offlineImplementation} gives an overview of this process. In the following the two phases are explained in detail.
 
 \begin{figure}[ht]
