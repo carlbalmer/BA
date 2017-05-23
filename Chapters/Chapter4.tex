@@ -11,7 +11,7 @@ The test bed consists of multiple anchor nodes, a mobile node and a computer.
 
 The ANs are commercial WiFi access pints, which are placed in the area of interest and constantly broadcast a beacon signal.
 
-The MN is an android smartphone. It is used to collect samples from different locations in the area of interest.
+The MN is an Android smartphone. It is used to collect samples from different locations in the area of interest.
 
 The samples collected by the MN are transferred to a computer. The computer is responsible for all the computations. It executes all the algorithms for the room recognition, ranging, weighting and the trilateration.
 
@@ -27,9 +27,9 @@ In our test bed implementation the smartphone is only used to collect the sample
 
 The set-up of this test bed comprises both hardware and software specific configurations for each component. The remainder of this chapter details these configurations.
 
-\section{Hardware Set-up}
+\section{Hardware}
 
-This set-up requires three different kinds of devices. One for the AN, another for the MN and a computer. There are no special requirements for the computer as long as it is able to execute Java code.
+The hardware for this test bed consists of multiple ANs, a MN and a computer. There are no special requirements for the computer as long as it is able to execute Java code.
 
 For the AN and MN the following hardware was employed:
 
@@ -38,7 +38,7 @@ The commercial WiFi access points used as anchor nodes are of the model D-Link D
 
 \paragraph{Mobile Node}
 
-The mobile node is an android smartphone of the model \emph{One Plus One}. It has the following specifications:
+The mobile node is an Android smartphone of the model \emph{One Plus One}. It has the following specifications:
 
 \begin{itemize}
 \item \textbf{OS:} Android 5.1
@@ -48,25 +48,24 @@ The mobile node is an android smartphone of the model \emph{One Plus One}. It ha
 \item \textbf{Memory:} 3 GB RAM
 \end{itemize}
 
-The WiFi module and the magnetometer are used for the sample collection. The magnetometer is reasonably accurate while the off-the-shelf WiFi interface is  prone to interferences.
+The WiFi module and the magnetometer are used for the sample collection. The magnetometer is reasonably accurate with a resolution of 0.1 $\si\micro\ T$. The off-the-shelf WiFi interface is less reliable because it does only provide fine-grained RSSI values (more fine-grained values would be better) and it does not support channel state information.
 
-
-\section{Software Set-up}
+\section{Software}
 
 \subsection{Mobile Node}
 
-The mobile node runs an android application which collects RSSI and magnetic field data.
+The mobile node runs an Android application which collects RSSI and magnetic field data.
 
 To collect one sample the application takes the average of five RSSI and magnetometer measurements, each spaced 2 seconds apart. The samples are then saved to a \code{.csv} file on the smartphones internal storage so they can later be transferred to the computer.
 
 Each sample consist of:
 \begin{itemize}
-\item \textbf{A label} aether indicating the room or the exact location where the sample was taken.
+\item \textbf{A label} indicating the room or the exact location where the sample was taken.
 \item \textbf{A set of RSSI values}, one for each AN.
 \item \textbf{The magnetic field strength} in \(\mu\)-Tesla along the devices x,y and z axis.
 \end{itemize}
 
-On android the WiFi module cannot be accessed directly. WiFi scans have to be initiated through the \code{AndroidAPI} and it only supports full scans \cite{brouwers2014incremental}. Full scans take longer so it is only possible to take one RSSI measurement every 1.5 seconds.
+On Android the WiFi module cannot be accessed directly. WiFi scans have to be initiated through the \code{AndroidAPI} and it only supports full scans \cite{brouwers2014incremental}. Full scans take longer so it is only possible to take one RSSI measurement every 1.5 seconds.
 
 Due to the low sampling rate, it is not practical to apply filters to remove noise from the $RSSI$. It is also not possible to access channel state information which could be used to mitigate some of the multi path effects.
 
@@ -81,11 +80,12 @@ On the computer a few different programs are used to implement the localization 
 \item A \textbf{Spreadsheet} program is used to manually calculate the weighting model.
 
 
-\item The \textbf{trilateration tool} is responsible for the application of the ranging and weighting models and performs the trilateration. It is a small Java application written for this test bed implementation.
+\item The \textbf{trilateration tool} \cite{trilaterationTool} is responsible for the application of the ranging and weighting models and performs the trilateration. It is a small Java application written for this test bed implementation.
 
 \end{itemize}
 
-The implementation of the room recognition system is split into two phases; The \textbf{offline phase} where the  room recognition, ranging and weighting model are generated. And the \textbf{online phase} where the models are used to predict the location of unknown samples.
+The implementation of the room recognition system is split into two phases; 
+In the \textbf{offline phase} the room recognition, ranging and weighting model are generated. Afterwards, in the \textbf{online phase}, these models are used to predict the location of unknown samples.
 
 Figure \ref{fig:offlineImplementation} gives an overview of this process. In the following the two phases are explained in detail.
 

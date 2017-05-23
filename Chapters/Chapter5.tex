@@ -4,7 +4,7 @@
 
 \label{Chapter5}
 
-in the previous chapter \ref{Chapter4} the test bed implementation was introduced. In this chapter this test bed is used to evaluate the performance of the system proposed in chapter \ref{Chapter3}.
+In chapter \ref{Chapter4} the test bed implementation was introduced. In this chapter this test bed is used to evaluate the performance of the system proposed in chapter \ref{Chapter3}.
 
 The evaluated components of the system are the room recognition and the room based weighting method for the trilateration.
 
@@ -23,9 +23,7 @@ Before presenting the evaluation results section \ref{TestBedDeployment} introdu
 
 The test bed was deployed on the third floor at the Institute of Computer Science (INF) of the University of Bern. The area of interest is 297m\textsuperscript{2} in size, with seven rooms connected by a large corridor. The five anchor nodes were positioned to provide maximum coverage of the area so that the mobile node is able to receive at least four of the signals at all time. The rooms were given numbers from one to eight, the corridor being also treated as a room.
 
-\subsection{Collected Data Sets}
-
-The samples were collected with the smartphone held approximatively one meter above the ground and always pointing in the same cardinal direction. This is important because the magnetic field measurements are influenced by the devices orientation.
+\paragraph{Collected Data Sets} The samples were collected with the smartphone held approximatively one meter above the ground and always pointing in the same cardinal direction. This is important because the magnetic field measurements are influenced by the devices orientation.
 
 The collected samples were grouped into the following data sets:
 
@@ -47,15 +45,15 @@ The collected samples were grouped into the following data sets:
 \section{Room Recognition}
 \label{EvaluationRoomRecognition}
 
-The purpose of this evaluation is to check the hypothesis that the magnetic field data improves the room recognition accuracy. Additionally, we want to find out which kind of training data (evenly distributed or more samples at the borders) achieves the best results.
+The purpose of this evaluation is to check the hypothesis that the magnetic field data improves room recognition accuracy. Additionally, we want to find out which kind of training data (evenly distributed or more samples at the borders) achieves the best results.
 
-\paragraph{To check if the magnetic field data has a significant impact on the performance of the room recognition} 10-fold cross validation is performed on the evenly distributed \emph{Grid} data set both with and without using magnetic field data. The resulting accuracies are compared. This experiment is repeated with different SVM parameters to see if the parameters have an impact on the result.
+\paragraph{To check if the magnetic field data has a significant impact on the performance of the room recognition} We perform a 10-fold cross validation\cite{crossvalidation} on the evenly distributed \emph{Grid} data set both with and without using magnetic field data. The resulting accuracies are compared. This experiment is repeated with different SVM parameters to see if the parameters have an impact on the result.
 
-\paragraph{To determine the best training data set} multiple models are generated using the two training data sets (\emph{Grid}, \emph{Borders}) and different SVM parameters and kernels. The models are tested against the evenly distributed \emph{XY} data set and the resulting accuracies are compared.
+\paragraph{To determine the best training data set} Multiple models are generated using the two training data sets (\emph{Grid}, \emph{Borders}) and different SVM parameters and kernels. The models are tested against the evenly distributed \emph{XY} data set and the resulting accuracies are compared.
 
-The SVM parameters are either the standard pre-sets or selected with cross validation and grid search.
+For the SVM parameters we use WEKA's standard pre-set values as well as optimized parameters selected with cross validation and grid search.
 
-\subsection{Results}
+\paragraph{Results}
 
 Table \ref{tab:RoomRecognitionMagneticField} shows a large difference between the performance with and without magnetic field data when using cross validation. With WEKA's pre-set SVM parameters (poly-kernel, $c=1,e=1$) the improvement is very large with almost 20\%. When using the optimal parameters (determined by grid search for each case separately) the difference drops to a still significant 10\%. This drop is due to the fact that the pre-set parameters seem to be better suited to the case with magnetic field data. A comparison between the two cases using not optimal parameters is therefore unfair.
 
@@ -80,9 +78,9 @@ Train: \emph{Grid}, Test: \emph{XY}&97.3\%&86.8\%&10.5\%\\
 \label{tab:RoomRecognitionMagneticField}
 \end{table}
 
-The reason for this unexpected result can be found by comparing the impact of the magnetic field data on the  room recognition accuracy for each room. We see in table \ref{tab:RoomRecognitionPerRoom} that the accuracy is improved in every room that was not already 100\%. With the exception of room \#3 where the accuracy drops to 0\%.
+The reason for this unexpected result can be found by comparing the impact of the magnetic field data on the  room recognition accuracy for each room. We see in table \ref{tab:RoomRecognitionPerRoom} that the accuracy is improved in every room where it was not already 100\%, except for room \#3 where the accuracy drops to 0\%.
 
-At the time the data sets were collected room \#3 was almost empty while the two adjacent rooms contained server racks and technical equipment (near the walls separating the rooms). I expect that some of this equipment caused a disruption of the magnetic field during the time that the \emph{XY} data set was created. And therefore obscured the already weak magnetic signature of room \#3. A similar effect was observed in related work \citep{Li2012feasableMagnetic}.
+At the time the data sets were collected room \#3 was almost empty while the two adjacent rooms contained server racks and technical equipment (near the walls separating the rooms). We expect that some of this equipment caused a disruption of the magnetic field during the time that the \emph{XY} data set was created and therefore obscured the already weak magnetic signature of room \#3. A similar effect was observed in related work \citep{Li2012feasableMagnetic}.
 
 When room \#3 is excluded from the test set we get the expected 10\% improvement when using magnetic field data.
 
@@ -116,7 +114,7 @@ Table \ref{tab:SVMconfigurationPoly} shows the accuracy with optimal parameters 
 
 For both training data sets the accuracy could be slightly increased by the parameter selection, but the relative accuracy is still the same; \emph{Borders} has the highest performance with \emph{Grid} only being marginally worse.
 
-With the optimized parameters both kernels have a similar performance, although the RBF kernels $c$ values are generally higher. A high $c$ value means that the RBF kernel's decision surface needs to be more complex to achieve the same accuracy as the polynomial kernel. It is therefore not as good at separating the samples.
+With the optimized parameters both kernels have a similar performance, although the RBF kernels $c$ values are generally higher. A high $c$ value means that the RBF kernel's decision surface needs to be more complex and have a smaller margin to achieve the same accuracy as the polynomial kernel. In general a less complex decision surface with a higher margin is preferred. We therefore infer that the polynomial kernel is better suited for this problem.
 
 Finally, to see if it is possible to train a room recognition system with a minimal number of samples the system was trained with the \emph{XY} data set and tested against the \emph{Grid}. This resulted in an accuracy of 81.2\%. This is still very high considering only 44 training samples were used.
 
@@ -160,7 +158,7 @@ Borders (373)&88.6\%&100&1&86.4\%&1000&0.01\\
 
 Section \ref{EvaluationRoomRecognition} has shown that the proposed room recognition can achieve high accuracy even with a small training data set. Potentially it could be trained with the same points used to train the ranging model, eliminating the need to collect additional samples. It is now possible to evaluate the proposed weighting method and see if the information from the room recognition can be used to improve the range based localization accuracy.
 
-In Chapter \ref{WeightingModelDefinition} a new weighting method was proposed; the \emph{Room Weights} (equation \ref{eqn: Room Weights}). The goal of this evaluation is to evaluate if the \emph{Room Weights} improve the accuracy of the trilateration and if this is true whether the accuracy can be further improved by combining the \emph{Room Weights} with the existing method of the \emph{Distance Weights}.
+In Chapter \ref{Chapter3} a new weighting method was proposed; the \emph{Room Weights} (equation \ref{eqn: Room Weights}). The goal of this evaluation is to evaluate if the \emph{Room Weights} improve the accuracy of the trilateration and if this is true whether the accuracy can be further improved by combining the \emph{Room Weights} with the existing method of the \emph{Distance Weights}.
 
 In a first step the new weighing method is applied with the assumption of 100\% room recognition and compared to \emph{ordinary least squares} (trilateration with no weights). This gives us a best-case value for the improvements with the new weighting method.
 
@@ -170,7 +168,7 @@ Finally, the performance of the proposed weighting method under real world condi
 
 The \emph{ranging model} and \emph{room weights} are trained with the entire \emph{XY} data set and imported into the trilateration tool. For evaluation the same data-set is used.
 
-\subsection{Results}
+\paragraph{Results}
 In addition to the mean, standard deviation and maximum error, the results are presented as the cumulative distribution function of the localization error. This allows for a more accurate representation of the performance than just using statistical values.
 
 \begin{table}[hb]
@@ -207,13 +205,13 @@ Distance Weights&2.42m&1.19m&5.37m&11.3\%\\
 \label{fig:WeightingCDFRoomDistance}
 \end{figure}
 
-The results with 100\% room recognition show an improvement of the \emph{Room Weights} over \emph{OLS}. The mean error is 14.2\% ($\approx$0.4m) lower, the standard deviation smaller and the maximum error was reduced by $\approx$3.4m. But when looking at the CDF plot (figure: \ref{fig:WeightingCDFRoom}) the improvement, although visible, does not seem very dramatic and is mainly due to the large reduction in the maximum error.
+The results with 100\% room recognition show an improvement of the \emph{Room Weights} over \emph{OLS}. The mean error is 14.2\% ($\approx$0.4m) lower, the standard deviation smaller and the maximum error was reduced by $\approx$3.4m. But when looking at the CDF plot (Figure: \ref{fig:WeightingCDFRoom}) the improvement, although visible, does not seem very dramatic and is mainly due to the large reduction in the maximum error.
 
-The results also show that combining the \emph{Room} and \emph{Distance Weights} does indeed yield a further small improvement. While the mean error is only marginally increased, it lowers the maximum error even further and smooths out the CDF curve (figure: \ref{fig:WeightingCDFRoomDistance}).
+The results also show that combining the \emph{Room} and \emph{Distance Weights} does indeed yield a further small improvement. While the mean error is only marginally increased, it lowers the maximum error even further and smooths out the CDF curve (Figure: \ref{fig:WeightingCDFRoomDistance}).
 
-The comparison between the performance of the weighting in a best-case scenario and real world case, shows that there is indeed an error introduced by the room recognition. But the CDF (figure: \ref{fig:WeightingCDFrealRoom}) shows that this error is overall very small and mainly due to a few samples with a large error, which increase the maximum error.
+The comparison between the performance of the weighting in a best-case scenario and real world case, shows that there is indeed an error introduced by the room recognition. But the CDF (Figure: \ref{fig:WeightingCDFrealRoom}) shows that this error is overall very small and mainly due to a few samples with a large error, which increase the maximum error.
 
-However, when taking into account this error, the real world performance of the proposed weighting method is almost the same as the existing simpler \emph{Distance Weights}. This is apparent in figure \ref{fig:WeightingCDFrealDistance}. The mean error is only a few centimeters lower (0.07m) and the maximum error even higher than with the \emph{Distance Weights}.
+However, when taking into account this error, the real world performance of the proposed weighting method is almost the same as the existing simpler \emph{Distance Weights}. This is apparent in Figure \ref{fig:WeightingCDFrealDistance}. The mean error is only a few centimeters lower (0.07m) and the maximum error even higher than with the \emph{Distance Weights}.
 
 \begin{figure}[bh]
 \centering
