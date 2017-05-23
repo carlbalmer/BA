@@ -26,7 +26,7 @@ Fingerprinting can be very labor intensive when used for accurate localization, 
 
 Magnetic field data ($B_{xyz}$) is also included in the fingerprinting map. We predict that this will increase the accuracy of the room recognition system as previous work has shown the applicability of magnetic field data for localization. \emph{This hypothesis needs to be confirmed in the evaluation.}
 
-Another question to be answered is what kind of fingerprinting map yields the highest accuracy; \emph{an equally distributed map or a unequally distributed one with more samples at the borders }(walls and doors between rooms).
+Another question to be answered is what kind of fingerprinting map yields the highest accuracy; \emph{an equally distributed map or a unequally distributed one with more samples at the borders }(walls and doors between rooms). Or in other words; do more samples at the borders increase the accuracy.
 
 The support vector machine was chosen as the classifier because it is, compared to other common classifiers like k-NN, better suited for this kind of problem. The SVM is pretty resistant to outliers in the training data, because it only chooses the most significant samples as support vectors. Also, it performs well with a small number of samples. k-NN on the other hand is very susceptible to outliers and generally needs more samples to offer good results.
 

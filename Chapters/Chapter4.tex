@@ -97,7 +97,7 @@ Figure \ref{fig:offlineImplementation} gives an overview of this process. In the
 \label{fig:offlineImplementation}
 \end{figure}
 
-\subsubsection{Offline Phase}
+\paragraph{Offline Phase}
 
 \paragraph{Room Recognition Model}
 The SVM for the room recognition is trained in WEKA. It generates a multiclass SVM model from the training data set and may use grid search for the parameter selection. The training data set consists of samples containing RSSI \((RSSI_{i})\) and magnetic field \((B_{xyz})\) values labeled with the room number \((R\#)\).
@@ -113,7 +113,7 @@ The \emph{Room Weights} are calculated by hand based on equation \ref{eqn: Room 
 
 The \emph{Distance Weights} are calculated by the trilateration tool during run time based on the equation \ref{eqn: distance weights}.
 
-\subsubsection{Online Phase}
+\paragraph{Online Phase}
 
 The online dataset contains samples with RSSI and magnetic field values.
 

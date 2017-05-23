@@ -28,7 +28,7 @@ The test bed was deployed on the third floor at the Institute of Computer Scienc
 The collected samples were grouped into the following data sets:
 
 \begin{itemize}
-\item \textbf{Fingerprinting data} only labeled with the room number
+\item \textbf{Room recognition data} \textbf{only} labeled with the room number
 	\begin{itemize}
 	\item Grid (223 samples)
 
@@ -37,10 +37,19 @@ The collected samples were grouped into the following data sets:
 
 	A set of \textbf{unevenly distributed} samples. The sample density is very high at the borders (walls and doors between rooms) with about one sample taken every 0.5m but only a few samples from the center of each room.
 	\end{itemize}
- \item \textbf{XY data} labeled with the exact coordinates
-
- A set of 44 \textbf{evenly distributed} samples labeled with \((X,Y)\)-coordinates.
+ \item \textbf{XY data} labeled with the exact coordinates\\
+A set of 44 \textbf{evenly distributed} samples labeled with \((X,Y)\)-coordinates \textbf{and} room number. Figure \ref{fig:FloorPlanANs} shows them as blue dots.
 \end{itemize}
+
+The room recognition data sets (\emph{Grid}, \emph{Borders}) are used to train the room recognition model. The \emph{XY} data set is mainly used to train the ranging model and evaluate the trilateration accuracy. But we can also use it as an independent test set to compare and evaluate the room recognition models.
+
+\begin{figure}[bh]
+\centering
+\includegraphics[width=\textwidth]{Figures/DataSets.png}
+\decoRule
+\caption[Collected Data Sets]{Illustration showing the collected data sets. (blue) \emph{XY} data set with exact coordinates, (green) \emph{Grid} data set, (red)\emph{Borders} data set.}
+\label{fig:DataSets}
+\end{figure}
 
 \section{Room Recognition}
 \label{EvaluationRoomRecognition}
@@ -53,7 +62,7 @@ The purpose of this evaluation is to check the hypothesis that the magnetic fiel
 
 For the SVM parameters we use WEKA's standard pre-set values as well as optimized parameters selected with cross validation and grid search.
 
-\paragraph{Results}
+\paragraph{Results: Magnetic field data}
 
 Table \ref{tab:RoomRecognitionMagneticField} shows a large difference between the performance with and without magnetic field data when using cross validation. With WEKA's pre-set SVM parameters (poly-kernel, $c=1,e=1$) the improvement is very large with almost 20\%. When using the optimal parameters (determined by grid search for each case separately) the difference drops to a still significant 10\%. This drop is due to the fact that the pre-set parameters seem to be better suited to the case with magnetic field data. A comparison between the two cases using not optimal parameters is therefore unfair.
 
@@ -104,7 +113,7 @@ When room \#3 is excluded from the test set we get the expected 10\% improvement
 \label{tab:RoomRecognitionPerRoom}
 \end{table}
 
-
+\paragraph{Results: Data sets and SVM parameters}
 
 Table \ref{tab:SVMconfigurationPresets} shows the accuracy for the two training data sets and two different kernel functions using WEKA's pre-set parameters. The polynomial kernel performs very well while with the RBF kernel the accuracy is below 20\% for all training data sets. The RBF kernel, with these parameters, does not seem to be a good fit for this kind of data.
 
@@ -171,7 +180,7 @@ The \emph{ranging model} and \emph{room weights} are trained with the entire \em
 \paragraph{Results}
 In addition to the mean, standard deviation and maximum error, the results are presented as the cumulative distribution function of the localization error. This allows for a more accurate representation of the performance than just using statistical values.
 
-\begin{table}[hb]
+\begin{table}[ht]
 \centering
 \begin{tabular}{l l l l l}
 \toprule
