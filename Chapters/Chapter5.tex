@@ -30,16 +30,19 @@ The collected samples were grouped into the following data sets:
 \begin{itemize}
 \item \textbf{Room recognition data} \textbf{only} labeled with the room number
 	\begin{itemize}
-	\item Grid (223 samples)
+	\item \textbf{Grid:} 223 samples \textit{(green dots in Figure \ref{fig:DataSets})}
 
 	A set of \textbf{evenly distributed} samples gathered in a grid pattern with approximately 1.2m distance between them.
-	\item Borders (373 samples)
+	\item \textbf{Borders} 373 samples \textit{(red dots)}
 
-	A set of \textbf{unevenly distributed} samples. The sample density is very high at the borders (walls and doors between rooms) with about one sample taken every 0.5m but only a few samples from the center of each room.
+	A set of \textbf{unevenly distributed} samples. The sample density is very high at the borders (walls and doors between rooms) with about one sample taken every 0.5m but only a few samples from the center of each room.\\
+	\textit{red dots in Figure \ref{fig:DataSets}}
 	\end{itemize}
- \item \textbf{XY data} labeled with the exact coordinates\\
+ \item \textbf{XY data} labeled with the exact coordinates \textit{(blue dots)}\\
 A set of 44 \textbf{evenly distributed} samples labeled with \((X,Y)\)-coordinates \textbf{and} room number. Figure \ref{fig:FloorPlanANs} shows them as blue dots.
 \end{itemize}
+
+Figure \ref{fig:DataSets} visualizes the difference between the data sets. The points are examples and not identical to the actual samples in the data sets.
 
 The room recognition data sets (\emph{Grid}, \emph{Borders}) are used to train the room recognition model. The \emph{XY} data set is mainly used to train the ranging model and evaluate the trilateration accuracy. But we can also use it as an independent test set to compare and evaluate the room recognition models.
 
@@ -47,14 +50,14 @@ The room recognition data sets (\emph{Grid}, \emph{Borders}) are used to train t
 \centering
 \includegraphics[width=\textwidth]{Figures/DataSets.png}
 \decoRule
-\caption[Collected Data Sets]{Illustration showing the collected data sets. (blue) \emph{XY} data set with exact coordinates, (green) \emph{Grid} data set, (red)\emph{Borders} data set.}
+\caption[Collected Data Sets]{Illustration showing room \#1 and the collected data sets. (blue) \emph{XY} data set with exact coordinates, (green) \emph{Grid} data set, (red)\emph{Borders} data set.}
 \label{fig:DataSets}
 \end{figure}
 
 \section{Room Recognition}
 \label{EvaluationRoomRecognition}
 
-The purpose of this evaluation is to check the hypothesis that the magnetic field data improves room recognition accuracy. Additionally, we want to find out which kind of training data (evenly distributed or more samples at the borders) achieves the best results.
+The purpose of this evaluation is to check the hypothesis that the magnetic field data improves room recognition accuracy. Additionally, we want to find out what kind of training data (evenly distributed or more samples at the borders) achieves the best results.
 
 \paragraph{To check if the magnetic field data has a significant impact on the performance of the room recognition} We perform a 10-fold cross validation\cite{crossvalidation} on the evenly distributed \emph{Grid} data set both with and without using magnetic field data. The resulting accuracies are compared. This experiment is repeated with different SVM parameters to see if the parameters have an impact on the result.
 

@@ -17,7 +17,7 @@
 
 Today's ubiquity of mobile computing has increased the demand for mobile devices to be aware of their location. Indoor location awareness is fundamental for many possible applications such as pedestrian navigation and location based marketing in large building complexes (e.g. universities, airports, hospitals).
 
-In contrast to outdoor localization, where the Global Positioning System (GPS) is the most attractive and effective technology to perform object localization, there's no established solution for indoor localization. GPS can't be applied in indoor scenarios due to the inability of GPS signal to penetrate in-building materials such  as walls. Moreover, radio localization approaches in indoor environments are affected by non-line-of-sight (NLOS) and multi-path propagation. These effects deteriorate the signal to be less accurate for localization \cite{JoseMaster,multipathEffects}. In addition to these challenges indoor location based applications usually require higher accuracy than those outdoors; An error of four meters is acceptable for street navigation but not for a museum guide.
+In contrast to outdoor localization, where the Global Positioning System (GPS) is the most attractive and effective technology to perform object localization, there is no established solution for indoor localization. GPS can not be applied in indoor scenarios due to the inability of GPS signal to penetrate in-building materials such  as walls. Moreover, radio localization approaches in indoor environments are affected by non-line-of-sight (NLOS) and multi-path propagation. These effects deteriorate the signal to be less accurate for localization \cite{JoseMaster,multipathEffects}. In addition to these challenges indoor location based applications usually require higher accuracy than those outdoors; An error of four meters is acceptable for street navigation but not for a museum guide.
 
 \section{Motivation}
 
@@ -30,7 +30,7 @@ Range-based methods use the radio parameters to try to approximate the distance 
 %----------------------------------------------------------------------------------------
 \section{Contributions}
 
-In this work we propose a localization system which uses fingerprinting to improve the range-based approach.
+In this work we propose a localization system, which uses fingerprinting to improve the range-based approach.
 
 The range-based localization method is complemented by a room recognition technique based on WiFi received signal strength indicator (RSSI) and magnetic field readings. The information provided by the room recognition is used to define a weighting model, which assign weights to the ranges in the trilateration algorithm.
 
@@ -39,7 +39,7 @@ The proposed localization system is implemented and tested in a complex indoor s
 The main contributions are summarized as follows:
 \begin{itemize}
 \item We present a simple, easy to train room recognition method based on fingerprinting and utilizing magnetic field and RSSI information.
-\item We present novel weighting method for range based trilateration which estimates the ranging error based on the information provided by the room recognition.
+\item We present novel weighting method for range based trilateration, which estimates the ranging error based on the information provided by the room recognition.
 \item We combine the two above mentioned methods to create an improved indoor location system.
 \end{itemize}
 

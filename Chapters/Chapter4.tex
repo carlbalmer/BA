@@ -54,7 +54,7 @@ The WiFi module and the magnetometer are used for the sample collection. The mag
 
 \subsection{Mobile Node}
 
-The mobile node runs an Android application which collects RSSI and magnetic field data.
+The mobile node runs an Android application, which collects RSSI and magnetic field data.
 
 To collect one sample the application takes the average of five RSSI and magnetometer measurements, each spaced 2 seconds apart. The samples are then saved to a \code{.csv} file on the smartphones internal storage so they can later be transferred to the computer.
 
@@ -67,7 +67,7 @@ Each sample consist of:
 
 On Android the WiFi module cannot be accessed directly. WiFi scans have to be initiated through the \code{AndroidAPI} and it only supports full scans \cite{brouwers2014incremental}. Full scans take longer so it is only possible to take one RSSI measurement every 1.5 seconds.
 
-Due to the low sampling rate, it is not practical to apply filters to remove noise from the $RSSI$. It is also not possible to access channel state information which could be used to mitigate some of the multi path effects.
+Due to the low sampling rate, it is not practical to apply filters to remove noise from the $RSSI$. It is also not possible to access channel state information, which could be used to mitigate some of the multi path effects.
 
 \subsection{Computer}
 
